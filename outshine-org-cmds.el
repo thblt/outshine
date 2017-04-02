@@ -1,8 +1,8 @@
 ;;; outshine-org-cmds.el --- outshine-use-outorg functions
 
-;; Author: Thorsten Jolitz <tjolitz AT gmail DOT com>
+;; Author: Adam Porter <adam@alphapapa.net>
 ;; Version: 0.1
-;; URL: https://github.com/tj64/outshine
+;; URL: https://github.com/alphapapa/outshine
 ;; Package-Requires: ((outorg "2.0") (cl-lib "0.5"))
 
 ;;;; MetaData
@@ -13,11 +13,10 @@
 ;;   :licence:  GPL 2 or later (free software)
 ;;   :licence-url: http://www.gnu.org/licenses/
 ;;   :part-of-emacs: no
-;;   :authors: Thorsten_Jolitz
-;;   :author_email: tjolitz AT gmail DOT com
+;;   :authors: Adam_Porter Thorsten_Jolitz
 ;;   :keywords: emacs outlines file_structuring
-;;   :git-repo: https://github.com/tj64/outshine.git
-;;   :git-clone: git://github.com/tj64/outshine.git
+;;   :git-repo: https://github.com/alphapapa/outshine.git
+;;   :git-clone: git://github.com/alphapapa/outshine.git
 ;;   :END:
 
 ;;;; Commentary

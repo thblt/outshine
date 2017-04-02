@@ -1,9 +1,20 @@
 #+TITLE: Outshine Project Contributors
 #+STARTUP: showeverything
 
-* Thorsten Jolitz 
+* Adam Porter
   :PROPERTIES:
   :roles:    principal_developer maintainer
+  :email:    <adam AT alphapapa DOT net>
+  :FSF:      no
+  :contributions: outshine.el outorg.el navi-mode.el
+  :nontrivial: yes
+  :END:
+
+He assumed maintainership of the packages from Thorsten Jolitz in April 2017.
+
+* Thorsten Jolitz
+  :PROPERTIES:
+  :roles:    original_author contributor former_maintainer
   :email:    <tjolitz AT gmail DOT com>
   :FSF:      yes
   :contributions: outshine.el outorg.el navi-mode.el
@@ -11,8 +22,8 @@
   :END:
 
 He had the initial idea, wrote most of the new code in outshine.el, as
-well as the libraries outorg.el and navi-mode.el, and maintains the
-whole project. 
+well as the libraries outorg.el and navi-mode.el, and used to maintain
+the whole project.
 
 * Carsten Dominik 
   :PROPERTIES:

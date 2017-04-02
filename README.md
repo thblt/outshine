@@ -10,9 +10,9 @@
 
 # outshine.el &#x2014; outline with outshine outshines outline<a id="sec-1"></a>
 
-Author: Thorsten Jolitz <tjolitz AT gmail DOT com>
+Author: Adam Porter
 Version: 2.0
-URL: <https://github.com/tj64/outshine>
+URL: <https://github.com/alphapapa/outshine>
 
 ## MetaData<a id="sec-1-1"></a>
 
@@ -28,9 +28,7 @@ URL: <https://github.com/tj64/outshine>
     
     part-of-emacs: no
     
-    authors: Thorsten_Jolitz Carsten_Dominik Per_Abrahamsen
-    
-    author_email: tjolitz AT gmail DOT com
+    authors: Adam_Porter Thorsten_Jolitz Carsten_Dominik Per_Abrahamsen
     
     credits: Fabrice_Niessen Alexander_Vorobiev Jonas_Bernoulli
     
@@ -38,9 +36,9 @@ URL: <https://github.com/tj64/outshine>
     
     keywords: emacs outlines file_structuring
     
-    git-repo: https://github.com/tj64/outshine.git
+    git-repo: https://github.com/alphapapa/outshine.git
     
-    git-clone: git://github.com/tj64/outshine.git
+    git-clone: git://github.com/alphapapa/outshine.git
 
 ## Commentary<a id="sec-1-2"></a>
 
@@ -116,6 +114,9 @@ these views.
 
 ### History and Credits<a id="sec-1-2-2"></a>
 
+The original author of outshine.el is Thorsten Jolitz, who transferred
+maintainership to Adam Porter in April 2017.
+
 The outshine.el library merges, modifies and extends two existing
 extension-libraries for \`outline' (minor) mode: \`outline-magic' (by
 Carsten Dominik) and \`out-xtra' (by Per Abrahamsen). It offers all the
@@ -139,7 +140,7 @@ There are three ways to get outshine.el (and the other Outshine
 libraries):
 
 1.  Clone the git repos or fork them on github
-    (<https://github.com/tj64>)
+    (<https://github.com/alphapapa>)
 
 2.  Use the package manager to install them (from MELPA).
 
