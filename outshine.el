@@ -1,6 +1,6 @@
 ;;; outshine.el --- outline with outshine outshines outline
 
-;; Author: Adam Porter <adam@alphapapa.net>
+;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; Version: 2.0
 ;; URL: http://github.com/alphapapa/outshine
 ;; Package-Requires: ((outorg "2.0") (cl-lib "0.5"))
@@ -13,7 +13,7 @@
 ;;   :licence:  GPL 2 or later (free software)
 ;;   :licence-url: http://www.gnu.org/licenses/
 ;;   :part-of-emacs: no
-;;   :authors: Adam_Porter Thorsten_Jolitz Carsten_Dominik Per_Abrahamsen
+;;   :authors: Thorsten_Jolitz Carsten_Dominik Per_Abrahamsen
 ;;   :credits:  Fabrice_Niessen Alexander_Vorobiev Jonas_Bernoulli
 ;;   :inspiration: outline-magic outxxtra out-xtra
 ;;   :keywords: emacs outlines file_structuring

@@ -10,7 +10,7 @@
 
 # outshine.el &#x2014; outline with outshine outshines outline<a id="sec-1"></a>
 
-Author: Adam Porter
+Maintainer: Adam Porter
 Version: 2.0
 URL: <https://github.com/alphapapa/outshine>
 
@@ -28,7 +28,7 @@ URL: <https://github.com/alphapapa/outshine>
     
     part-of-emacs: no
     
-    authors: Adam_Porter Thorsten_Jolitz Carsten_Dominik Per_Abrahamsen
+    authors: Thorsten_Jolitz Carsten_Dominik Per_Abrahamsen
     
     credits: Fabrice_Niessen Alexander_Vorobiev Jonas_Bernoulli
     
