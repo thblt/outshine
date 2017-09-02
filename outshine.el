@@ -727,6 +727,29 @@ any other entries, and any resulting duplicates will be removed entirely."
   :group 'outshine
   :type 'boolean)
 
+(defcustom outshine-fontify t
+  ;; `quote' instead of ' to avoid conversion of ' in for example C-h v
+  ;; (`describe-variable').
+  "When to fontify the outshine headings in a buffer.
+
+Possible values are:
+
+ `t'        Always (the default).
+ `nil'      Never.
+ function   A Lisp predicate function with no arguments. For example
+            `(lambda () (not (derived-mode-p (quote prog-mode))))'
+            fontifies only when not in a programming mode.
+
+`t' and `nil' can be used for a file local variable to make an
+exception for certain files or to be independent of the user's
+customization."
+  :group 'outshine
+  :type '(choice :value ""
+                 (const :tag "Always (the default)" t)
+                 (const :tag "Never" nil)
+                 (function :tag "Function"))
+  :safe (lambda (v) (memq v '(t nil))))
+
 ;; from `org'
 (defcustom outshine-fontify-whole-heading-line nil
   "Non-nil means fontify the whole line for headings.
@@ -1572,7 +1595,6 @@ function was called upon."
      out-regexp
      'outshine-calc-outline-level
      outshine-outline-heading-end-regexp)
-    (outshine-fontify-headlines out-regexp)
     (setq outline-promotion-headings
           (outshine-make-promotion-headings-list 8))
     ;; imenu preparation
@@ -1584,11 +1606,17 @@ function was called upon."
 	     (add-to-list 'imenu-generic-expression
                           (car outshine-imenu-preliminary-generic-expression))
            (setq imenu-generic-expression
-                 outshine-imenu-preliminary-generic-expression))))
-  (when outshine-startup-folded-p
-    (condition-case error-data
-        (outline-hide-sublevels 1)
-      ('error (message "No outline structure detected")))))
+                 outshine-imenu-preliminary-generic-expression)))
+    (when outshine-startup-folded-p
+      (condition-case error-data
+          (outline-hide-sublevels 1)
+        ('error (message "No outline structure detected"))))
+    (when (pcase outshine-fontify
+            ('t t)
+            ('nil nil)
+            ((pred functionp) (funcall outshine-fontify))
+            (_ (user-error "Invalid value for variable `outshine-fontify'")))
+      (outshine-fontify-headlines out-regexp))))
 
 ;; ;; add this to your .emacs
 ;; (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
