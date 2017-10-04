@@ -535,16 +535,15 @@ them set by set, separated by a nil element.  See the example for
   "Storage for old value of `org-agenda-files'")
 
 ;; copied and adapted from ob-core.el
-(defvar outshine-temporary-directory)
-(unless (or noninteractive (boundp 'outshine-temporary-directory))
-;; FIXME why this duplication?
-  (defvar outshine-temporary-directory
-    (or (and (boundp 'outshine-temporary-directory)
-	     (file-exists-p outshine-temporary-directory)
-	     outshine-temporary-directory)
-	(make-temp-file "outshine-" t))
-    "Directory to hold outshine's temporary files.
-This directory will be removed on Emacs shutdown."))
+;; (defvar outshine-temporary-directory)
+;; (unless (or noninteractive (boundp 'outshine-temporary-directory))
+;; ;; FIXME why this duplication?
+;;   (defvar outshine-temporary-directory
+;;     (or (and (boundp 'outshine-temporary-directory)
+;; 	     (file-exists-p outshine-temporary-directory)
+;; 	     outshine-temporary-directory)
+;; 	(make-temp-file "outshine-" t))
+;;     "Directory to hold outshine's temporary files."))
 
 ;;;; Hooks
 
@@ -1815,6 +1814,9 @@ If yes, return this character."
 ;; `outshine-temporary-directory'. Return that file's
 ;; buffer-file-name.
 
+;; When uncommenting this section, `outshine-temporary-directory' needs to be uncommented as well
+;; If this section is removed, please remove `outshine-temporary-directory' as well
+
 ;; When RESTRICTION-LOCK is given, act conditional on its value:
 
 ;;  - file :: (symbol) restrict to buffer
@@ -2911,7 +2913,7 @@ marking subtree (and subsequently run the tex command)."
 ;;        (call-interactively 'org-schedule)))))
 
 ;; FIXED -> org-store-log-note _outcommented_!
-;; FIXME lognote insertion position 
+;; FIXME lognote insertion position
 ;; ;; C-c C-t		org-todo
 ;; (defun outshine-todo (&optional arg)
 ;;   "Call outorg to trigger `org-todo'."
