@@ -1296,6 +1296,17 @@ top-level heading first."
 
 ;;;;; Fontify the headlines
 
+(defsubst outshine-font-lock-flush ()
+  "Calls `font-lock-flush' or equivalent.
+Compatibility with Emacs versions <25."
+  (if (fboundp #'font-lock-flush)
+      (font-lock-flush)
+    ;; Copied from Emacs 25 font-lock.el, changed to call
+    ;; `jit-lock-refontify' directly
+    (and font-lock-mode
+         font-lock-fontified
+         (jit-lock-refontify))))
+
 (defun outshine-fontify-headlines (outline-regexp)
   "Calculate heading regexps for font-lock mode."
   (let* ((outline-rgxp (substring outline-regexp 0 -8))
@@ -1357,7 +1368,7 @@ top-level heading first."
        (,heading-6-regexp 1 'outshine-level-6 t)
        (,heading-7-regexp 1 'outshine-level-7 t)
        (,heading-8-regexp 1 'outshine-level-8 t)))
-    (font-lock-flush)))
+    (outshine-font-lock-flush)))
 
 
 ;;;;; Functions for speed-commands
