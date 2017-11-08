@@ -1611,8 +1611,8 @@ function was called upon."
           (outline-hide-sublevels 1)
         ('error (message "No outline structure detected"))))
     (when (pcase outshine-fontify
-            ('t t)
-            ('nil nil)
+            (`t t)
+            (`nil nil)
             ((pred functionp) (funcall outshine-fontify))
             (_ (user-error "Invalid value for variable `outshine-fontify'")))
       (outshine-fontify-headlines out-regexp))))
