@@ -442,14 +442,14 @@ A comment subtree does not open during visibility cycling.")
 ;;;; Vars
 
 ;; from `outline-magic'
-(defvar outline-promotion-headings nil
+(defvar outshine-outline-promotion-headings nil
   "A sorted list of headings used for promotion/demotion commands.
 Set this to a list of headings as they are matched by `outline-regexp',
 top-level heading first.  If a mode or document needs several sets of
 outline headings (for example numbered and unnumbered sections), list
 them set by set, separated by a nil element.  See the example for
 `texinfo-mode' in the file commentary.")
-(make-variable-buffer-local 'outline-promotion-headings)
+(make-variable-buffer-local 'outshine-outline-promotion-headings)
 
 (defvar outshine-delete-leading-whitespace-from-outline-regexp-base-p nil
   "If non-nil, delete leading whitespace from outline-regexp-base.")
@@ -1597,7 +1597,7 @@ function was called upon."
      out-regexp
      'outshine-calc-outline-level
      outshine-outline-heading-end-regexp)
-    (setq outline-promotion-headings
+    (setq outshine-outline-promotion-headings
           (outshine-make-promotion-headings-list 8))
     ;; imenu preparation
     (and outshine-imenu-show-headlines-p
@@ -1674,9 +1674,9 @@ function was called upon."
 list, or an alist derived from scanning the buffer."
   (let (headlist)
     (cond
-     (outline-promotion-headings
+     (outshine-outline-promotion-headings
       ;; configured by the user or the mode
-      (setq headlist outline-promotion-headings))
+      (setq headlist outshine-outline-promotion-headings))
 
      ((and (eq major-mode 'outline-mode) (string= outline-regexp "[*\^L]+"))
       ;; default outline mode with original regexp
@@ -1712,7 +1712,7 @@ list, or an alist derived from scanning the buffer."
 (defun outshine-outline-change-heading (headlist delta atom &optional test)
   "Change heading just matched by `outline-regexp' by DELTA levels.
 HEADLIST can be either an alist ((\"outline-match\" . level)...) or a
-straight list like `outline-promotion-headings'. ATOM is a character
+straight list like `outshine-outline-promotion-headings'. ATOM is a character
 if all headlines are composed of a single character.
 If TEST is non-nil, just prepare the change and error if there are problems.
 TEST nil means, really replace old heading with new one."
