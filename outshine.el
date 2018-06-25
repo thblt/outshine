@@ -1886,26 +1886,6 @@ If yes, return this character."
 
 ;;;; Commands
 ;;;;; Additional outline commands
-;;;;;; Commands from `out-xtra'
-
-(defun outline-hide-other ()
-  "Hide everything except for the current body and the parent headings."
-  (interactive)
-  (outline-hide-sublevels 1)
-  (let ((last (point))
-        (pos (point)))
-    (while (save-excursion
-             (and (re-search-backward "[\n\r]" nil t)
-                  (eq (following-char) ?\r)))
-      (save-excursion
-        (beginning-of-line)
-        (if (eq last (point))
-            (progn
-              (outline-next-heading)
-              (outline-flag-region last (point) ?\n))
-          (show-children)
-          (setq last (point)))))))
-
 ;;;;;; Commands from `outline-magic'
 
 (defun outline-next-line ()
@@ -1916,66 +1896,6 @@ Essentially a much simplified version of `next-line'."
   (while (and (not (eobp))
               (get-char-property (1- (point)) 'invisible))
     (beginning-of-line 2)))
-
-(defun outline-move-subtree-up (&optional arg)
-  "Move the currrent subtree up past ARG headlines of the same level."
-  (interactive "p")
-  (let ((headers (or arg 1)))
-    (outline-move-subtree-down (- headers))))
-
-(defun outline-move-subtree-down (&optional arg)
-  "Move the currrent subtree down past ARG headlines of the same level."
-  (interactive "p")
-  (let* ((headers (or arg 1))
-        (re (concat "^" outline-regexp))
-        (movfunc (if (> headers 0) 'outline-get-next-sibling
-                   'outline-get-last-sibling))
-        (ins-point (make-marker))
-        (cnt (abs headers))
-        beg end txt)
-    ;; Select the tree
-    (outline-back-to-heading)
-    (setq beg (point))
-    (outline-end-of-subtree)
-    (if (= (char-after) ?\n) (forward-char 1))
-    (setq end (point))
-    ;; Find insertion point, with error handling
-    (goto-char beg)
-    (while (> cnt 0)
-      (or (funcall movfunc)
-          (progn (goto-char beg)
-                 (error "Cannot move past superior level")))
-      (setq cnt (1- cnt)))
-    (if (> headers 0)
-        ;; Moving forward - still need to move over subtree
-        (progn (outline-end-of-subtree)
-               (if (= (char-after) ?\n) (forward-char 1))))
-    (move-marker ins-point (point))
-    (setq txt (buffer-substring beg end))
-    (delete-region beg end)
-    (insert txt)
-    (goto-char ins-point)
-    (move-marker ins-point nil)))
-
-(defun outline-promote (&optional arg)
-  "Decrease the level of an outline-structure by ARG levels.
-When the region is active in transient-mark-mode, all headlines in the
-region are changed.  Otherwise the current subtree is targeted. Note that
-after each application of the command the scope of \"current subtree\"
-may have changed."
-  (interactive "p")
-  (let ((delta (or arg 1)))
-    (outline-change-level (- delta))))
-
-(defun outline-demote (&optional arg)
-  "Increase the level of an outline-structure by ARG levels.
-When the region is active in transient-mark-mode, all headlines in the
-region are changed.  Otherwise the current subtree is targeted. Note that
-after each application of the command the scope of \"current subtree\"
-may have changed."
-  (interactive "p")
-  (let ((delta (or arg 1)))
-    (outline-change-level delta)))
 
 (defun outline-cycle (&optional arg)
   "Visibility cycling for outline(-minor)-mode.
