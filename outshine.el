@@ -441,14 +441,6 @@ A comment subtree does not open during visibility cycling.")
 
 ;;;; Vars
 
-;; "\C-c" conflicts with other modes like e.g. ESS
-(defvar outline-minor-mode-prefix "\M-#"
-  "New outline-minor-mode prefix.
-Does not really take effect when set in the `outshine' library.
-Instead, it must be set in your init file *before* the `outline'
-library is loaded, see the installation tips in the comment
-section of `outshine'.")
-
 ;; from `outline-magic'
 (defvar outline-promotion-headings nil
   "A sorted list of headings used for promotion/demotion commands.
