@@ -1888,24 +1888,6 @@ If yes, return this character."
 ;;;;; Additional outline commands
 ;;;;;; Commands from `out-xtra'
 
-(defun outline-hide-sublevels (keep-levels)
-  "Hide everything except the first KEEP-LEVEL headers."
-  (interactive "p")
-  (if (< keep-levels 1)
-      (error "Must keep at least one level of headers"))
-  (setq keep-levels (1- keep-levels))
-  (save-excursion
-    (goto-char (point-min))
-    ;; Skip the prelude, if any.
-    (unless (outline-on-heading-p t) (outline-next-heading))
-    (hide-subtree)
-    (show-children keep-levels)
-    (condition-case err
-        (while (outline-get-next-sibling)
-          (hide-subtree)
-          (show-children keep-levels))
-      (error nil))))
-
 (defun outline-hide-other ()
   "Hide everything except for the current body and the parent headings."
   (interactive)
