@@ -776,12 +776,6 @@ t      Everywhere except in headlines"
                  (const :tag "Everywhere except in headlines" t)
                  ))
 
-;; from `outline-magic'
-(defcustom outline-structedit-modifiers '(meta)
-  "List of modifiers for outline structure editing with the arrow keys."
-  :group 'outlines
-  :type '(repeat symbol))
-
 ;; startup options
 (defcustom outshine-startup-folded-p nil
   "Non-nil means files will be opened with all but top level headers folded."
