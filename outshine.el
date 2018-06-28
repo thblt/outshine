@@ -1144,21 +1144,18 @@ Based on `comment-start' and `comment-add'."
            "")))
        ))))
 
-;;;;; Set outline-regexp und outline-level
+;;;;; Set outline-regexp and outline-level
 
 (defun outshine-set-local-outline-regexp-and-level
   (start-regexp &optional fun end-regexp)
    "Set `outline-regexp' locally to START-REGEXP.
 Set optionally `outline-level' to FUN and
 `outline-heading-end-regexp' to END-REGEXP."
-        (make-local-variable 'outline-regexp)
-        (setq outline-regexp start-regexp)
+        (setq-local outline-regexp start-regexp)
         (and fun
-             (make-local-variable 'outline-level)
-             (setq outline-level fun))
+             (setq-local outline-level fun))
         (and end-regexp
-             (make-local-variable 'outline-heading-end-regexp)
-             (setq outline-heading-end-regexp end-regexp)))
+             (setq-local outline-heading-end-regexp end-regexp)))
 
 ;;;;; Show number of lines in hidden body
 
