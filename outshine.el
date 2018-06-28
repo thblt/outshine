@@ -3724,22 +3724,6 @@ marking subtree (and subsequently run the tex command)."
 ;;   (menu-item "" CMD :filter (lambda (cmd) (if foo cmd))).
 
 ;;;; Menus
-;;;;; Advertise Bindings
-
-(put 'outshine-insert-heading :advertised-binding [M-ret])
-(put 'outshine-outline-cycle :advertised-binding [?\t])
-(put 'outshine-cycle-buffer :advertised-binding [backtab])
-(put 'outline-promote :advertised-binding [M-S-left])
-(put 'outline-demote :advertised-binding [M-S-right])
-(put 'outline-move-subtree-up :advertised-binding [M-S-up])
-(put 'outline-move-subtree-down :advertised-binding [M-S-down])
-(put 'outshine-outline-hide-more :advertised-binding [M-left])
-(put 'outshine-outline-show-more :advertised-binding [M-right])
-(put 'outline-next-visible-header :advertised-binding [M-down])
-(put 'outline-previous-visible-header :advertised-binding [M-up])
-(put 'show-all :advertised-binding [?\M-# \?M-a])
-(put 'outline-up-heading :advertised-binding [?\M-# ?\M-u])
-(put 'outorg-edit-as-org :advertised-binding [?\M-# ?\M-#])
 
 ;;;;; Define Menu
 
