@@ -1550,6 +1550,9 @@ world outside of the Org major-mode."
 Don't use this function, the public interface is
 `outshine-minor-mode'."
 
+  ;; Ensure outline is on
+  (outline-minor-mode 1)
+
   ;; Install deactivation hook
   (add-hook 'outline-minor-mode-hook 'outshine--outline-minor-mode-hook)
 
