@@ -1573,7 +1573,8 @@ Don't use this function, the public interface is
 `outshine-minor-mode'."
 
   ;; Ensure outline is on
-  (outline-minor-mode 1)
+  (unless outline-minor-mode
+    (error "Outshine requires Outline to be activated first"))
 
   ;; Save variables
   (setq outshine-protected-variables-values (mapcar 'symbol-value outshine-protected-variables))
