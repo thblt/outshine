@@ -1582,10 +1582,25 @@ function was called upon."
 ;;;;; Hook function
 
 ;;;###autoload
-(defun outshine-hook-function ()
-  "Add this function to outline-minor-mode-hook"
+(define-minor-mode outshine-minor-mode
+  "Outshine brings the look&feel of Org-mode to the (GNU Emacs)
+world outside of the Org major-mode."
+  :init-value nil
+  :lighter "Outshine"
+  (if outshine-minor-mode
+      (outshine--minor-mode-activate)
+      (outshine--minor-mode-deactivate))
+  (run-hooks 'outshine-hook))
+
+(defun outshine--minor-mode-activate ()
+  "This function is private, use `outshine-minor-mode' to toggle Outshine."
+  ;; Install deactivation hook
+  (add-hook 'outline-minor-mode-hook 'outshine--outline-minor-mode-hook)
+
+  ;; TODO What is this? *2
   (outshine-set-outline-regexp-base)
   (outshine-normalize-regexps)
+
   (let ((out-regexp (outshine-calc-outline-regexp)))
     (outshine-set-local-outline-regexp-and-level
      out-regexp
@@ -1614,9 +1629,23 @@ function was called upon."
             (_ (user-error "Invalid value for variable `outshine-fontify'")))
       (outshine-fontify-headlines out-regexp))))
 
-;; ;; add this to your .emacs
-;; (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+(defun outshine--minor-mode-deactivate ()
+  "This function is private, use `outshine-minor-mode' to toggle Outshine.")
 
+;;;###autoload
+(defun outshine-hook-function ()
+  "DEPRECATED, use `outshine-minor-mode'."
+  (error "`outshine-hook-function' has been deprecated, use `outshine-minor-mode'"))
+
+(defun outshine--outline-minor-mode-hook ()
+  "Deactivate `outshine-minor-mode' if `outshine-minor-mode' but not `outline-minor-mode'.
+
+This function will be hooked to `outline-minor-mode'."
+  (when (and outshine-minor-mode
+             (not outline-minor-mode))
+    (outshine-minor-mode 0)))
+
+ 
 ;;;;; Additional outline functions
 ;;;;;; Functions from `outline-magic'
 
@@ -4292,7 +4321,6 @@ marking subtree (and subsequently run the tex command)."
 
 ;;; Run hooks and provide
 
-(run-hooks 'outshine-hook)
 
 (provide 'outshine)
 
