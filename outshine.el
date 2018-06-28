@@ -290,10 +290,6 @@
   outshine-level-5 outshine-level-6 outshine-level-7
   outshine-level-8))
 
-(defconst outshine-outline-heading-end-regexp "\n"
-  "Global default value of `outline-heading-end-regexp'.
-Used to override any major-mode specific file-local settings")
-
 ;; was "[;]+"
 (defconst outshine-oldschool-elisp-outline-regexp-base
   (format "[;]\\{1,%d\\}" outshine-max-level)
@@ -1590,7 +1586,7 @@ function was called upon."
     (outshine-set-local-outline-regexp-and-level
      out-regexp
      'outshine-calc-outline-level
-     outshine-outline-heading-end-regexp)
+     outline-heading-end-regexp)
     (setq outshine-outline-promotion-headings
           (outshine-make-promotion-headings-list 8))
     ;; imenu preparation
