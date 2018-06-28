@@ -442,42 +442,31 @@ A comment subtree does not open during visibility cycling.")
   "The keymap for `outshine-minor-mode'.")
 
 ;; from `outline-magic'
-(defvar outshine-outline-promotion-headings nil
+(defvar-local outshine-outline-promotion-headings nil
   "A sorted list of headings used for promotion/demotion commands.
 Set this to a list of headings as they are matched by `outline-regexp',
 top-level heading first.  If a mode or document needs several sets of
 outline headings (for example numbered and unnumbered sections), list
 them set by set, separated by a nil element.  See the example for
 `texinfo-mode' in the file commentary.")
-(make-variable-buffer-local 'outshine-outline-promotion-headings)
 
-(defvar outshine-delete-leading-whitespace-from-outline-regexp-base-p nil
+(defvar-local outshine-delete-leading-whitespace-from-outline-regexp-base-p nil
   "If non-nil, delete leading whitespace from outline-regexp-base.")
-(make-variable-buffer-local
- 'outshine-delete-leading-whitespace-from-outline-regexp-base-p)
 
-(defvar outshine-enforce-no-comment-padding-p nil
+(defvar-local outshine-enforce-no-comment-padding-p nil
   "If non-nil, make sure no comment-padding is used in heading.")
-(make-variable-buffer-local
- 'outshine-enforce-no-comment-padding-p)
 
 (defvar outshine-outline-regexp-base ""
   "Actual base for calculating the outline-regexp")
 
-(defvar outshine-normalized-comment-start ""
+(defvar-local outshine-normalized-comment-start ""
   "Comment-start regexp without leading and trailing whitespace")
-(make-variable-buffer-local
- 'outshine-normalized-comment-start)
 
-(defvar outshine-normalized-comment-end ""
+(defvar-local outshine-normalized-comment-end ""
   "Comment-end regexp without leading and trailing whitespace")
-(make-variable-buffer-local
- 'outshine-normalized-comment-end)
 
-(defvar outshine-normalized-outline-regexp-base ""
+(defvar-local outshine-normalized-outline-regexp-base ""
   "Outline-regex-base without leading and trailing whitespace")
-(make-variable-buffer-local
- 'outshine-normalized-outline-regexp-base)
 
 ;; show number of hidden lines in folded subtree
 (defvar outshine-show-hidden-lines-cookies-p nil
@@ -487,15 +476,11 @@ them set by set, separated by a nil element.  See the example for
 (defvar outshine-hidden-lines-cookies-on-p nil
   "If non-nil, hidden-lines cookies are shown, otherwise hidden.")
 
-(defvar outshine-imenu-default-generic-expression nil
+(defvar-local outshine-imenu-default-generic-expression nil
   "Expression assigned by default to `imenu-generic-expression'.")
-(make-variable-buffer-local
- 'outshine-imenu-default-generic-expression)
 
-(defvar outshine-imenu-generic-expression nil
+(defvar-local outshine-imenu-generic-expression nil
   "Expression assigned to `imenu-generic-expression'.")
-(make-variable-buffer-local
- 'outshine-imenu-generic-expression)
 
 (defvar outshine-self-insert-command-undo-counter 0
   "Used for outshine speed-commands.")
@@ -509,10 +494,8 @@ them set by set, separated by a nil element.  See the example for
 (defvar outshine-current-buffer-visibility-state nil
   "Stores current visibility state of buffer.")
 
-(defvar outshine-use-outorg-last-headline-marker (make-marker)
+(defvar-local outshine-use-outorg-last-headline-marker (make-marker)
   "Marker for last headline edited with outorg.")
-(make-variable-buffer-local
- 'outshine-use-outorg-last-headline-marker)
 
 (defvar outshine-imenu-preliminary-generic-expression nil
   "Imenu variable.")
