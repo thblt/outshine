@@ -452,6 +452,9 @@ A comment subtree does not open during visibility cycling.")
 (defvar-local outshine-protected-variables-values nil
 "The values of variables defined by `outshine-protected-variables'.")
 
+(defvar-local outshine-font-lock-keywords nil
+  "Font locking keywords defined in the current buffer.")
+
 ;; from `outline-magic'
 (defvar-local outshine-outline-promotion-headings nil
   "A sorted list of headings used for promotion/demotion commands.
@@ -1306,19 +1309,27 @@ Compatibility with Emacs versions <25."
                  outline-rgxp
                  "\\{8\\} \\(.*"
                  (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)")))
-    (font-lock-add-keywords
-     nil
-     `((,heading-1-regexp 1 'outshine-level-1 t)
-       (,heading-2-regexp 1 'outshine-level-2 t)
-       (,heading-3-regexp 1 'outshine-level-3 t)
-       (,heading-4-regexp 1 'outshine-level-4 t)
-       (,heading-5-regexp 1 'outshine-level-5 t)
-       (,heading-6-regexp 1 'outshine-level-6 t)
-       (,heading-7-regexp 1 'outshine-level-7 t)
-       (,heading-8-regexp 1 'outshine-level-8 t)))
+                 "\\)"))
+        (font-lock-new-keywords
+         `((,heading-1-regexp 1 'outshine-level-1 t)
+           (,heading-2-regexp 1 'outshine-level-2 t)
+           (,heading-3-regexp 1 'outshine-level-3 t)
+           (,heading-4-regexp 1 'outshine-level-4 t)
+           (,heading-5-regexp 1 'outshine-level-5 t)
+           (,heading-6-regexp 1 'outshine-level-6 t)
+           (,heading-7-regexp 1 'outshine-level-7 t)
+           (,heading-8-regexp 1 'outshine-level-8 t))))
+
+    (add-to-list 'outshine-font-lock-keywords font-lock-new-keywords)
+    (font-lock-add-keywords nil font-lock-new-keywords)
     (outshine-font-lock-flush)))
 
+(defun outshine-unfontify ()
+  "Remove existing fontification."
+
+  (font-lock-remove-keywords nil (car outshine-font-lock-keywords))
+  (setq outshine-font-lock-keywords nil)
+  (outshine-font-lock-flush))
 
 ;;;;; Functions for speed-commands
 
@@ -1627,7 +1638,10 @@ Don't use this function, the public interface is
 Don't use this function, the public interface is
 `outshine-minor-mode'."
   ;; Restore variables
-  (cl-mapc 'set outshine-protected-variables outshine-protected-variables-values))
+  (cl-mapc 'set outshine-protected-variables outshine-protected-variables-values)
+
+  ;; Deactivate font-lock
+  (outshine-unfontify))
 
 ;;;###autoload
 (defun outshine-hook-function ()
