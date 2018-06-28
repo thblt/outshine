@@ -935,23 +935,6 @@ significant."
       (goto-char org-log-note-marker)
       (copy-marker (org-log-beginning)))))
 
-(defadvice org-store-log-note (around org-store-log-note-around activate)
-  "Outcomment inserted log-note in Outshine buffers."
-  (let ((outshine-log-note-beg-marker
-	 ;; stay before inserted text
-	 ;; (copy-marker org-log-note-marker nil))
-	 (copy-marker (outshine-mimic-org-log-note-marker) nil))
-	(outshine-log-note-end-marker
-	 ;; stay after inserted text
-	 ;; (copy-marker org-log-note-marker t)))
-	 (copy-marker (outshine-mimic-org-log-note-marker) t)))
-    ad-do-it
-    (unless (derived-mode-p 'org-mode 'org-agenda-mode)
-      (outshine-comment-region outshine-log-note-beg-marker
-		      outshine-log-note-end-marker))
-    (move-marker outshine-log-note-beg-marker nil)
-    (move-marker outshine-log-note-end-marker nil)))
-
 ;;;; Functions
 ;;;;; Define keys with fallback
 
@@ -1569,6 +1552,25 @@ Don't use this function, the public interface is
 
   ;; Install deactivation hook
   (add-hook 'outline-minor-mode-hook 'outshine--outline-minor-mode-hook)
+
+  ;; Advise org-store-log-note
+  (defadvice org-store-log-note (around org-store-log-note-around activate)
+    "Outcomment inserted log-note in Outshine buffers."
+    (when outshine-minor-mode
+      (let ((outshine-log-note-beg-marker
+	           ;; stay before inserted text
+	           ;; (copy-marker org-log-note-marker nil))
+	           (copy-marker (outshine-mimic-org-log-note-marker) nil))
+	          (outshine-log-note-end-marker
+	           ;; stay after inserted text
+	           ;; (copy-marker org-log-note-marker t)))
+	           (copy-marker (outshine-mimic-org-log-note-marker) t)))
+        ad-do-it
+        (unless (derived-mode-p 'org-mode 'org-agenda-mode)
+          (outshine-comment-region outshine-log-note-beg-marker
+		                               outshine-log-note-end-marker))
+        (move-marker outshine-log-note-beg-marker nil)
+        (move-marker outshine-log-note-end-marker nil))))
 
   ;; Compute basic outline regular expressions
   (outshine-set-outline-regexp-base)
