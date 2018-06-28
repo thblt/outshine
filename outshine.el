@@ -290,6 +290,14 @@
   outshine-level-5 outshine-level-6 outshine-level-7
   outshine-level-8))
 
+(defconst outshine-protected-variables
+  '(outline-regexp outline-level outline-heading-end-regexp)
+  "A list of variables to save when activating
+`outshine-minor-mode' and restore afterwards.
+
+Don't touch this: if a variable is missing from this list, report
+a bug or send a PR." )
+
 ;; was "[;]+"
 (defconst outshine-oldschool-elisp-outline-regexp-base
   (format "[;]\\{1,%d\\}" outshine-max-level)
@@ -440,6 +448,9 @@ A comment subtree does not open during visibility cycling.")
 (defvar outshine-minor-mode-map
   (make-sparse-keymap)
   "The keymap for `outshine-minor-mode'.")
+
+(defvar-local outshine-protected-variables-values nil
+"The values of variables defined by `outshine-protected-variables'.")
 
 ;; from `outline-magic'
 (defvar-local outshine-outline-promotion-headings nil
@@ -1553,6 +1564,9 @@ Don't use this function, the public interface is
   ;; Ensure outline is on
   (outline-minor-mode 1)
 
+  ;; Save variables
+  (setq outshine-protected-variables-values (mapcar 'symbol-value outshine-protected-variables))
+
   ;; Install deactivation hook
   (add-hook 'outline-minor-mode-hook 'outshine--outline-minor-mode-hook)
 
@@ -1608,7 +1622,12 @@ Don't use this function, the public interface is
       (outshine-fontify-headlines out-regexp))))
 
 (defun outshine--minor-mode-deactivate ()
-  "This function is private, use `outshine-minor-mode' to toggle Outshine.")
+  "Deactivate Outshine.
+
+Don't use this function, the public interface is
+`outshine-minor-mode'."
+  ;; Restore variables
+  (cl-mapc 'set outshine-protected-variables outshine-protected-variables-values))
 
 ;;;###autoload
 (defun outshine-hook-function ()
