@@ -509,17 +509,6 @@ them set by set, separated by a nil element.  See the example for
 (defvar outshine-agenda-old-org-agenda-files nil
   "Storage for old value of `org-agenda-files'")
 
-;; copied and adapted from ob-core.el
-;; (defvar outshine-temporary-directory)
-;; (unless (or noninteractive (boundp 'outshine-temporary-directory))
-;; ;; FIXME why this duplication?
-;;   (defvar outshine-temporary-directory
-;;     (or (and (boundp 'outshine-temporary-directory)
-;; 	     (file-exists-p outshine-temporary-directory)
-;; 	     outshine-temporary-directory)
-;; 	(make-temp-file "outshine-" t))
-;;     "Directory to hold outshine's temporary files."))
-
 ;;;; Hooks
 
 (defvar outshine-hook nil
@@ -1559,7 +1548,7 @@ function was called upon."
     (call-interactively fun))
   (outorg-copy-edits-and-exit))
 
-;;;;; Hook function
+;;;;; Minor mode
 
 ;;;###autoload
 (define-minor-mode outshine-minor-mode
@@ -1573,11 +1562,15 @@ world outside of the Org major-mode."
   (run-hooks 'outshine-hook))
 
 (defun outshine--minor-mode-activate ()
-  "This function is private, use `outshine-minor-mode' to toggle Outshine."
+  "Activate Outshine.
+
+Don't use this function, the public interface is
+`outshine-minor-mode'."
+
   ;; Install deactivation hook
   (add-hook 'outline-minor-mode-hook 'outshine--outline-minor-mode-hook)
 
-  ;; TODO What is this? *2
+  ;; Compute basic outline regular expressions
   (outshine-set-outline-regexp-base)
   (outshine-normalize-regexps)
 
@@ -4298,9 +4291,7 @@ marking subtree (and subsequently run the tex command)."
 ;; ;; C-c C-x <left>	org-shiftcontrolleft
 ;; ;; C-c C-x <right>      org-shiftcontrolright
 
-
-;;; Run hooks and provide
-
+;;; outshine.el ends soon
 
 (provide 'outshine)
 
