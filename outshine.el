@@ -437,6 +437,10 @@ A comment subtree does not open during visibility cycling.")
 
 ;;;; Vars
 
+(defvar outshine-minor-mode-map
+  (make-sparse-keymap)
+  "The keymap for `outshine-minor-mode'.")
+
 ;; from `outline-magic'
 (defvar outshine-outline-promotion-headings nil
   "A sorted list of headings used for promotion/demotion commands.
@@ -1400,7 +1404,7 @@ COMMANDS is a list of alternating OLDDEF NEWDEF command names."
           (outshine-defkey map (vector 'remap old) new)
         (substitute-key-definition old new map global-map)))))
 
-(outshine-remap outline-minor-mode-map
+(outshine-remap outshine-minor-mode-map
              'self-insert-command 'outshine-self-insert-command)
 
 ;;;;; Functions for hiding comment-subtrees
@@ -3737,7 +3741,7 @@ marking subtree (and subsequently run the tex command)."
 
 ;;;;; Define Menu
 
-(easy-menu-define outshine-menu outline-minor-mode-map "Outshine menu"
+(easy-menu-define outshine-menu outshine-minor-mode-map "Outshine menu"
   '("Outshine"
      ["Cycle Subtree" outshine-outline-cycle
       :active (outline-on-heading-p) :keys "<tab>"]
@@ -3769,9 +3773,9 @@ marking subtree (and subsequently run the tex command)."
 
 ;; add "Outshine" menu item
 
-;; (easy-menu-add outshine-menu outline-minor-mode-map)
+;; (easy-menu-add outshine-menu outshine-minor-mode-map)
 ;; get rid of "Outline" menu item
-(define-key outline-minor-mode-map [menu-bar outline] 'undefined)
+(define-key outshine-minor-mode-map [menu-bar outline] 'undefined)
 
 ;;;; Keybindings
 ;;;;; Principal Keybindings
@@ -3784,15 +3788,15 @@ marking subtree (and subsequently run the tex command)."
 ;;  Adapted from `org-mode' and `outline-mode-easy-bindings'
 ;; Visibility Cycling
 ;; (outshine-define-key-with-fallback
-;;  outline-minor-mode-map (kbd "<tab>")
+;;  outshine-minor-mode-map (kbd "<tab>")
 ;;  (outshine-outline-cycle arg) (outline-on-heading-p))
 
 ;; (outshine-define-key-with-fallback
-;;  outline-minor-mode-map (kbd "TAB")
+;;  outshine-minor-mode-map (kbd "TAB")
 ;;  (outshine-outline-cycle arg) (outline-on-heading-p))
 
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "TAB")
+ outshine-minor-mode-map (kbd "TAB")
  (outshine-outline-cycle arg)
  (or
   (and
@@ -3803,45 +3807,45 @@ marking subtree (and subsequently run the tex command)."
 
 ;; works on the console too
 (define-key
-  outline-minor-mode-map (kbd "M-TAB") 'outshine-cycle-buffer)
-;; outline-minor-mode-map (kbd "<backtab>") 'outshine-cycle-buffer)
-;; outline-minor-mode-map (kbd "BACKTAB") 'outshine-cycle-buffer)
+  outshine-minor-mode-map (kbd "M-TAB") 'outshine-cycle-buffer)
+;; outshine-minor-mode-map (kbd "<backtab>") 'outshine-cycle-buffer)
+;; outshine-minor-mode-map (kbd "BACKTAB") 'outshine-cycle-buffer)
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-<left>")
+ outshine-minor-mode-map (kbd "M-<left>")
  (outshine-outline-hide-more) (outline-on-heading-p))
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-<right>")
+ outshine-minor-mode-map (kbd "M-<right>")
  (outshine-outline-show-more) (outline-on-heading-p))
 ;; Headline Insertion
 (outshine-define-key-with-fallback
- ;; outline-minor-mode-map (kbd "M-<return>")
- outline-minor-mode-map (kbd "M-RET")
+ ;; outshine-minor-mode-map (kbd "M-<return>")
+ outshine-minor-mode-map (kbd "M-RET")
  (outshine-insert-heading) (outline-on-heading-p))
 ;; Structure Editing
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-S-<left>")
+ outshine-minor-mode-map (kbd "M-S-<left>")
  (outline-promote) (outline-on-heading-p))
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-S-<right>")
+ outshine-minor-mode-map (kbd "M-S-<right>")
  (outline-demote) (outline-on-heading-p))
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-S-<up>")
+ outshine-minor-mode-map (kbd "M-S-<up>")
  (outline-move-subtree-up) (outline-on-heading-p))
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-S-<down>")
+ outshine-minor-mode-map (kbd "M-S-<down>")
  (outline-move-subtree-down) (outline-on-heading-p))
 ;; Motion
 (define-key
-  ;; outline-minor-mode-map [(meta up)]
-  outline-minor-mode-map [M-up]
-  ;; outline-minor-mode-map (kbd "M-<up>")
-  ;; outline-minor-mode-map (kbd "<M-up>")
+  ;; outshine-minor-mode-map [(meta up)]
+  outshine-minor-mode-map [M-up]
+  ;; outshine-minor-mode-map (kbd "M-<up>")
+  ;; outshine-minor-mode-map (kbd "<M-up>")
   'outline-previous-visible-heading)
 (define-key
-  ;; outline-minor-mode-map [(meta down)]
-  outline-minor-mode-map [M-down]
-  ;; outline-minor-mode-map (kbd "M-<down>")
-  ;; outline-minor-mode-map (kbd "<M-down>")
+  ;; outshine-minor-mode-map [(meta down)]
+  outshine-minor-mode-map [M-down]
+  ;; outshine-minor-mode-map (kbd "M-<down>")
+  ;; outshine-minor-mode-map (kbd "<M-down>")
   'outline-next-visible-heading)
 
 ;;;;; Other Keybindings
@@ -3859,7 +3863,7 @@ marking subtree (and subsequently run the tex command)."
 
 ;; ;; Set the outline-minor-mode-prefix key in your init-file
 ;; ;; before loading outline-mode
-;; (let ((map (lookup-key outline-minor-mode-map outline-minor-mode-prefix)))
+;; (let ((map (lookup-key outshine-minor-mode-map outline-minor-mode-prefix)))
 ;;   ;; define sub-prefix
 ;;   ;; (define-key map (kbd "C-v") nil)
 ;;   (define-key map (kbd "M-+") nil)
@@ -3901,10 +3905,10 @@ marking subtree (and subsequently run the tex command)."
 ;; ;;;;;; [M-# Letter]
 
 ;;   ;; (outshine-define-key-with-fallback
-;;   ;;  outline-minor-mode-map (kbd "J")
+;;   ;;  outshine-minor-mode-map (kbd "J")
 ;;   ;;  (outshine-outline-hide-more) (outline-on-heading-p))
 ;;   ;; (outshine-define-key-with-fallback
-;;   ;;  outline-minor-mode-map (kbd "L")
+;;   ;;  outshine-minor-mode-map (kbd "L")
 ;;   ;;  (outshine-outline-show-more) (outline-on-heading-p))
 ;;   ;; (define-key map (kbd "I") 'outline-previous-visible-heading)
 ;;   ;; (define-key map (kbd "K") 'outline-next-visible-heading)
