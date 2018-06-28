@@ -1646,7 +1646,8 @@ Don't use this function, the public interface is
 ;;;###autoload
 (defun outshine-hook-function ()
   "DEPRECATED, use `outshine-minor-mode'."
-  (error "`outshine-hook-function' has been deprecated, use `outshine-minor-mode'"))
+  (warn "`outshine-hook-function' has been deprecated, use `outshine-minor-mode'")
+  (outshine-minor-mode 1))
 
 (defun outshine--outline-minor-mode-hook ()
   "Deactivate `outshine-minor-mode' if `outshine-minor-mode' but not `outline-minor-mode'.
