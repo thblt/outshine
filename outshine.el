@@ -1574,7 +1574,7 @@ Don't use this function, the public interface is
 
   ;; Ensure outline is on
   (unless outline-minor-mode
-    (error "Outshine requires Outline to be activated first"))
+    (outline-minor-mode 1))
 
   ;; Save variables
   (setq outshine-protected-variables-values (mapcar 'symbol-value outshine-protected-variables))
