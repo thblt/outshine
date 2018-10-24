@@ -290,10 +290,6 @@
   outshine-level-5 outshine-level-6 outshine-level-7
   outshine-level-8))
 
-(defconst outshine-outline-heading-end-regexp "\n"
-  "Global default value of `outline-heading-end-regexp'.
-Used to override any major-mode specific file-local settings")
-
 ;; was "[;]+"
 (defconst outshine-oldschool-elisp-outline-regexp-base
   (format "[;]\\{1,%d\\}" outshine-max-level)
@@ -330,7 +326,7 @@ Used to override any major-mode specific file-local settings")
     ("g" . outshine-imenu)
     ("Outline Visibility")
     ;; [X]
-    ("c" . outline-cycle)
+    ("c" . outshine-cycle)
     ;; [X]
     ("C" . outshine-cycle-buffer)
     ;; [X]
@@ -441,23 +437,15 @@ A comment subtree does not open during visibility cycling.")
 
 ;;;; Vars
 
-;; "\C-c" conflicts with other modes like e.g. ESS
-(defvar outline-minor-mode-prefix "\M-#"
-  "New outline-minor-mode prefix.
-Does not really take effect when set in the `outshine' library.
-Instead, it must be set in your init file *before* the `outline'
-library is loaded, see the installation tips in the comment
-section of `outshine'.")
-
 ;; from `outline-magic'
-(defvar outline-promotion-headings nil
+(defvar outshine-promotion-headings nil
   "A sorted list of headings used for promotion/demotion commands.
 Set this to a list of headings as they are matched by `outline-regexp',
 top-level heading first.  If a mode or document needs several sets of
 outline headings (for example numbered and unnumbered sections), list
 them set by set, separated by a nil element.  See the example for
 `texinfo-mode' in the file commentary.")
-(make-variable-buffer-local 'outline-promotion-headings)
+(make-variable-buffer-local 'outshine-promotion-headings)
 
 (defvar outshine-delete-leading-whitespace-from-outline-regexp-base-p nil
   "If non-nil, delete leading whitespace from outline-regexp-base.")
@@ -469,7 +457,7 @@ them set by set, separated by a nil element.  See the example for
 (make-variable-buffer-local
  'outshine-enforce-no-comment-padding-p)
 
-(defvar outshine-outline-regexp-base ""
+(defvar outshine-regexp-base ""
   "Actual base for calculating the outline-regexp")
 
 (defvar outshine-normalized-comment-start ""
@@ -757,13 +745,13 @@ poutshine-level-* faces."
   :group 'outshine
   :type 'boolean)
 
-(defcustom outshine-outline-regexp-outcommented-p t
+(defcustom outshine-regexp-outcommented-p t
   "Non-nil if regexp-base is outcommented to calculate outline-regexp."
   :group 'outshine
   :type 'boolean)
 
 ;; was "[][+]"
-(defcustom outshine-outline-regexp-special-chars
+(defcustom outshine-regexp-special-chars
   "[][}{,+[:digit:]\\]"
   "Regexp for detecting (special) characters in outline-regexp.
 These special chars will be stripped when the outline-regexp is
@@ -773,8 +761,8 @@ certain level is calculated. "
   :type 'regexp)
 
 ;; from `outline-magic'
-(defcustom outline-cycle-emulate-tab nil
-  "Where should `outline-cycle' emulate TAB.
+(defcustom outshine-cycle-emulate-tab nil
+  "Where should `outshine-cycle' emulate TAB.
 nil    Never
 white  Only in completely white lines
 t      Everywhere except in headlines"
@@ -783,12 +771,6 @@ t      Everywhere except in headlines"
                  (const :tag "Only in completely white lines" white)
                  (const :tag "Everywhere except in headlines" t)
                  ))
-
-;; from `outline-magic'
-(defcustom outline-structedit-modifiers '(meta)
-  "List of modifiers for outline structure editing with the arrow keys."
-  :group 'outlines
-  :type '(repeat symbol))
 
 ;; startup options
 (defcustom outshine-startup-folded-p nil
@@ -1055,10 +1037,10 @@ recover it by stripping off \"-map\" from KEYMAP name."
        (eq major-mode 'emacs-lisp-mode))
       (progn
         (setq outshine-enforce-no-comment-padding-p t)
-        (setq outshine-outline-regexp-base
+        (setq outshine-regexp-base
               outshine-oldschool-elisp-outline-regexp-base))
     (setq outshine-enforce-no-comment-padding-p nil)
-    (setq outshine-outline-regexp-base
+    (setq outshine-regexp-base
           outshine-default-outline-regexp-base)))
 
 (defun outshine-normalize-regexps ()
@@ -1071,9 +1053,9 @@ recover it by stripping off \"-map\" from KEYMAP name."
   (and comment-end
        (setq outshine-normalized-comment-end
              (outshine-chomp comment-end)))
-  (and outshine-outline-regexp-base
+  (and outshine-regexp-base
        (setq outshine-normalized-outline-regexp-base
-             (outshine-chomp outshine-outline-regexp-base))))
+             (outshine-chomp outshine-regexp-base))))
 
 ;;;;; Calculate outline-regexp and outline-level
 
@@ -1120,7 +1102,7 @@ Based on `comment-start' and `comment-add'."
 (defun outshine-calc-outline-regexp ()
   "Calculate the outline regexp for the current mode."
   (concat
-   (and outshine-outline-regexp-outcommented-p
+   (and outshine-regexp-outcommented-p
          ;; regexp-base outcommented, but no 'comment-start' defined
          (or comment-start
              (message (concat
@@ -1142,7 +1124,7 @@ Based on `comment-start' and `comment-add'."
 ;; TODO how is this called (match-data?) 'looking-at' necessary?
 (defun outshine-calc-outline-level ()
   "Calculate the right outline level for the
-  outshine-outline-regexp"
+  outshine-regexp"
   (save-excursion
     (save-match-data
       (and
@@ -1212,7 +1194,7 @@ Set optionally `outline-level' to FUN and
   "Return non-nil if hidden-lines cookie needs modification."
   (save-excursion
     (save-match-data
-      (or (not (outline-body-visible-p))
+      (or (not (outshine-body-visible-p))
           (re-search-forward
            outshine-hidden-lines-cookie-format-regexp
            (line-end-position)
@@ -1220,7 +1202,7 @@ Set optionally `outline-level' to FUN and
 
 (defun outshine-set-hidden-lines-cookie ()
   "Calculate and set number of hidden lines in folded headline."
-  (let* ((folded-p (not (outline-body-visible-p)))
+  (let* ((folded-p (not (outshine-body-visible-p)))
          (line-num-current-header (line-number-at-pos))
          (line-num-next-visible-header
           (save-excursion
@@ -1258,7 +1240,7 @@ Set optionally `outline-level' to FUN and
 (defun outshine-calc-outline-string-at-level (level)
   "Return outline-string at level LEVEL."
   (let ((base-string (outshine-calc-outline-base-string-at-level level)))
-    (if (not outshine-outline-regexp-outcommented-p)
+    (if (not outshine-regexp-outcommented-p)
         base-string
       (concat (outshine-calc-comment-region-starter)
               (if outshine-enforce-no-comment-padding-p
@@ -1277,7 +1259,7 @@ Set optionally `outline-level' to FUN and
 (defun outshine-transform-normalized-outline-regexp-base-to-string ()
   "Transform 'outline-regexp-base' to string by stripping off special chars."
   (replace-regexp-in-string
-   outshine-outline-regexp-special-chars
+   outshine-regexp-special-chars
    ""
    outshine-normalized-outline-regexp-base))
 
@@ -1604,8 +1586,8 @@ function was called upon."
     (outshine-set-local-outline-regexp-and-level
      out-regexp
      'outshine-calc-outline-level
-     outshine-outline-heading-end-regexp)
-    (setq outline-promotion-headings
+     outline-heading-end-regexp)
+    (setq outshine-promotion-headings
           (outshine-make-promotion-headings-list 8))
     ;; imenu preparation
     (and outshine-imenu-show-headlines-p
@@ -1634,20 +1616,20 @@ function was called upon."
 ;;;;; Additional outline functions
 ;;;;;; Functions from `outline-magic'
 
-(defun outline-cycle-emulate-tab ()
+(defun outshine-cycle-emulate-tab ()
   "Check if TAB should be emulated at the current position."
   ;; This is called after the check for point in a headline,
   ;; so we can assume we are not in a headline
-  (if (and (eq outline-cycle-emulate-tab 'white)
+  (if (and (eq outshine-cycle-emulate-tab 'white)
            (save-excursion
              (beginning-of-line 1) (looking-at "[ \t]+$")))
       t
-    outline-cycle-emulate-tab))
+    outshine-cycle-emulate-tab))
 
-(defun outline-change-level (delta)
+(defun outshine-change-level (delta)
   "Workhorse for `outline-demote' and `outline-promote'."
-  (let* ((headlist (outline-headings-list))
-         (atom (outline-headings-atom headlist))
+  (let* ((headlist (outshine-headings-list))
+         (atom (outshine-headings-atom headlist))
          (re (concat "^" outline-regexp))
          (transmode (and transient-mark-mode mark-active))
          beg end)
@@ -1670,21 +1652,21 @@ function was called upon."
         ;; First a dry run to test if there is any trouble ahead.
         (goto-char beg)
         (while (re-search-forward re end t)
-          (outline-change-heading headlist delta atom 'test))
+          (outshine-change-heading headlist delta atom 'test))
 
         ;; Now really do replace the headings
         (goto-char beg)
         (while (re-search-forward re end t)
-          (outline-change-heading headlist delta atom))))))
+          (outshine-change-heading headlist delta atom))))))
 
-(defun outline-headings-list ()
+(defun outshine-headings-list ()
   "Return a list of relevant headings, either a user/mode defined
 list, or an alist derived from scanning the buffer."
   (let (headlist)
     (cond
-     (outline-promotion-headings
+     (outshine-promotion-headings
       ;; configured by the user or the mode
-      (setq headlist outline-promotion-headings))
+      (setq headlist outshine-promotion-headings))
 
      ((and (eq major-mode 'outline-mode) (string= outline-regexp "[*\^L]+"))
       ;; default outline mode with original regexp
@@ -1698,7 +1680,7 @@ list, or an alist derived from scanning the buffer."
           (while (re-search-forward re nil t)
             (save-excursion
               (beginning-of-line 1)
-              (setq head (outline-cleanup-match (match-string 0))
+              (setq head (outshine-cleanup-match (match-string 0))
                     level (funcall outline-level))
               (add-to-list  'headlist (cons head level))))))
       ;; Check for uniqueness of levels in the list
@@ -1706,7 +1688,7 @@ list, or an alist derived from scanning the buffer."
         (while (setq entry (car hl))
           (setq hl (cdr hl)
                 level (cdr entry))
-          (if (and (not (outline-static-level-p level))
+          (if (and (not (outshine-static-level-p level))
                    (member level seen))
               ;; We have two entries for the same level.
               (add-to-list 'nonunique level))
@@ -1717,21 +1699,21 @@ list, or an alist derived from scanning the buffer."
     ;; OK, return the list
     headlist))
 
-(defun outline-change-heading (headlist delta atom &optional test)
+(defun outshine-change-heading (headlist delta atom &optional test)
   "Change heading just matched by `outline-regexp' by DELTA levels.
 HEADLIST can be either an alist ((\"outline-match\" . level)...) or a
-straight list like `outline-promotion-headings'. ATOM is a character
+straight list like `outshine-promotion-headings'. ATOM is a character
 if all headlines are composed of a single character.
 If TEST is non-nil, just prepare the change and error if there are problems.
 TEST nil means, really replace old heading with new one."
-  (let* ((head (outline-cleanup-match (match-string 0)))
+  (let* ((head (outshine-cleanup-match (match-string 0)))
          (level (save-excursion
                   (beginning-of-line 1)
                   (funcall outline-level)))
          (newhead  ; compute the new head
           (cond
            ((= delta 0) t)
-           ((outline-static-level-p level) t)
+           ((outshine-static-level-p level) t)
            ((null headlist) nil)
            ((consp (car headlist))
             ;; The headlist is an association list
@@ -1762,10 +1744,10 @@ TEST nil means, really replace old heading with new one."
           (beginning-of-line 1)
           (or (looking-at (concat "[ \t]*\\(" (regexp-quote head) "\\)"))
               (error "Please contact maintainer"))
-          (replace-match (outline-cleanup-match newhead) t t nil 1)))))
+          (replace-match (outshine-cleanup-match newhead) t t nil 1)))))
 
-(defun outline-headings-atom (headlist)
-  "Use the list created by `outline-headings-list' and check if all
+(defun outshine-headings-atom (headlist)
+  "Use the list created by `outshine-headings-list' and check if all
 headings are polymers of a single character, e.g. \"*\".
 If yes, return this character."
   (if (consp (car headlist))
@@ -1777,7 +1759,7 @@ If yes, return this character."
                                    headlist)))
             (string-to-char (car (car headlist)))))))
 
-(defun outline-cleanup-match (s)
+(defun outshine-cleanup-match (s)
   "Remove text properties and start/end whitespace from a string."
   (set-text-properties 1 (length s) nil s)
   (save-match-data
@@ -1785,7 +1767,7 @@ If yes, return this character."
     (if (string-match "[ \t]+$" s) (setq s (replace-match "" t t s))))
   s)
 
-(defun outline-static-level-p (level)
+(defun outshine-static-level-p (level)
   "Test if a level should not be changed by level promotion/demotion."
   (>= level 1000))
 
@@ -1886,29 +1868,9 @@ If yes, return this character."
 
 ;;;; Commands
 ;;;;; Additional outline commands
-;;;;;; Commands from `out-xtra'
-
-(defun outline-hide-other ()
-  "Hide everything except for the current body and the parent headings."
-  (interactive)
-  (outline-hide-sublevels 1)
-  (let ((last (point))
-        (pos (point)))
-    (while (save-excursion
-             (and (re-search-backward "[\n\r]" nil t)
-                  (eq (following-char) ?\r)))
-      (save-excursion
-        (beginning-of-line)
-        (if (eq last (point))
-            (progn
-              (outline-next-heading)
-              (outline-flag-region last (point) ?\n))
-          (show-children)
-          (setq last (point)))))))
-
 ;;;;;; Commands from `outline-magic'
 
-(defun outline-next-line ()
+(defun outshine-next-line ()
   "Forward line, but mover over invisible line ends.
 Essentially a much simplified version of `next-line'."
   (interactive)
@@ -1917,67 +1879,7 @@ Essentially a much simplified version of `next-line'."
               (get-char-property (1- (point)) 'invisible))
     (beginning-of-line 2)))
 
-(defun outline-move-subtree-up (&optional arg)
-  "Move the currrent subtree up past ARG headlines of the same level."
-  (interactive "p")
-  (let ((headers (or arg 1)))
-    (outline-move-subtree-down (- headers))))
-
-(defun outline-move-subtree-down (&optional arg)
-  "Move the currrent subtree down past ARG headlines of the same level."
-  (interactive "p")
-  (let* ((headers (or arg 1))
-        (re (concat "^" outline-regexp))
-        (movfunc (if (> headers 0) 'outline-get-next-sibling
-                   'outline-get-last-sibling))
-        (ins-point (make-marker))
-        (cnt (abs headers))
-        beg end txt)
-    ;; Select the tree
-    (outline-back-to-heading)
-    (setq beg (point))
-    (outline-end-of-subtree)
-    (if (= (char-after) ?\n) (forward-char 1))
-    (setq end (point))
-    ;; Find insertion point, with error handling
-    (goto-char beg)
-    (while (> cnt 0)
-      (or (funcall movfunc)
-          (progn (goto-char beg)
-                 (error "Cannot move past superior level")))
-      (setq cnt (1- cnt)))
-    (if (> headers 0)
-        ;; Moving forward - still need to move over subtree
-        (progn (outline-end-of-subtree)
-               (if (= (char-after) ?\n) (forward-char 1))))
-    (move-marker ins-point (point))
-    (setq txt (buffer-substring beg end))
-    (delete-region beg end)
-    (insert txt)
-    (goto-char ins-point)
-    (move-marker ins-point nil)))
-
-(defun outline-promote (&optional arg)
-  "Decrease the level of an outline-structure by ARG levels.
-When the region is active in transient-mark-mode, all headlines in the
-region are changed.  Otherwise the current subtree is targeted. Note that
-after each application of the command the scope of \"current subtree\"
-may have changed."
-  (interactive "p")
-  (let ((delta (or arg 1)))
-    (outline-change-level (- delta))))
-
-(defun outline-demote (&optional arg)
-  "Increase the level of an outline-structure by ARG levels.
-When the region is active in transient-mark-mode, all headlines in the
-region are changed.  Otherwise the current subtree is targeted. Note that
-after each application of the command the scope of \"current subtree\"
-may have changed."
-  (interactive "p")
-  (let ((delta (or arg 1)))
-    (outline-change-level delta)))
-
-(defun outline-cycle (&optional arg)
+(defun outshine-cycle (&optional arg)
   "Visibility cycling for outline(-minor)-mode.
 
 - When point is at the beginning of the buffer, or when called with a
@@ -2001,12 +1903,12 @@ may have changed."
   (cond
 
    ((equal arg '(4))
-    ;; Run `outline-cycle' as if at the top of the buffer.
+    ;; Run `outshine-cycle' as if at the top of the buffer.
     (let ((outshine-org-style-global-cycling-at-bob-p nil)
           (current-prefix-arg nil))
     (save-excursion
       (goto-char (point-min))
-      (outline-cycle nil))))
+      (outshine-cycle nil))))
 
    (t
     (cond
@@ -2022,7 +1924,7 @@ may have changed."
         (not (outline-on-heading-p))
         outshine-org-style-global-cycling-at-bob-p))
       (cond
-       ((eq last-command 'outline-cycle-overview)
+       ((eq last-command 'outshine-cycle-overview)
         ;; We just created the overview - now do table of contents
         ;; This can be slow in very large buffers, so indicate action
         (unless outshine-cycle-silently
@@ -2041,15 +1943,15 @@ may have changed."
           (unless outshine-cycle-silently
             (message "CONTENTS...done")))
         (setq
-         this-command 'outline-cycle-toc
+         this-command 'outshine-cycle-toc
          outshine-current-buffer-visibility-state 'contents))
-       ((eq last-command 'outline-cycle-toc)
+       ((eq last-command 'outshine-cycle-toc)
         ;; We just showed the table of contents - now show everything
         (show-all)
         (unless outshine-cycle-silently
           (message "SHOW ALL"))
         (setq
-         this-command 'outline-cycle-showall
+         this-command 'outshine-cycle-showall
          outshine-current-buffer-visibility-state 'all))
        (t
         ;; Default action: go to overview
@@ -2067,7 +1969,7 @@ may have changed."
         (unless outshine-cycle-silently
           (message "OVERVIEW"))
         (setq
-         this-command 'outline-cycle-overview
+         this-command 'outshine-cycle-overview
          outshine-current-buffer-visibility-state 'overview))))
 
      ((save-excursion (beginning-of-line 1) (looking-at outline-regexp))
@@ -2077,7 +1979,7 @@ may have changed."
         ;; First, some boundaries
         (save-excursion
           (outline-back-to-heading)           (setq beg (point))
-          (save-excursion (outline-next-line) (setq eol (point)))
+          (save-excursion (outshine-next-line) (setq eol (point)))
           (outline-end-of-heading)            (setq eoh (point))
           (outline-end-of-subtree)            (setq eos (point)))
         ;; Find out what to do next and set `this-command'
@@ -2093,9 +1995,9 @@ may have changed."
           (unless outshine-cycle-silently
             (message "CHILDREN"))
           (setq
-           this-command 'outline-cycle-children))
+           this-command 'outshine-cycle-children))
            ;; outshine-current-buffer-visibility-state 'children))
-         ((eq last-command 'outline-cycle-children)
+         ((eq last-command 'outshine-cycle-children)
           ;; We just showed the children, now show everything.
           (show-subtree)
           (unless outshine-cycle-silently
@@ -2107,7 +2009,7 @@ may have changed."
             (message "FOLDED"))))))
 
      ;; TAB emulation
-     ((outline-cycle-emulate-tab)
+     ((outshine-cycle-emulate-tab)
       (indent-relative))
 
      (t
@@ -2117,7 +2019,7 @@ may have changed."
 (defun outshine-cycle-buffer ()
   "Cycle the visibility state of buffer."
   (interactive)
-  (outline-cycle '(4)))
+  (outshine-cycle '(4)))
 
 (defun outshine-toggle-silent-cycling (&optional arg)
   "Toggle silent cycling between visibility states.
@@ -2140,7 +2042,7 @@ may have changed."
 
 ;; Copied from: http://emacswiki.org/emacs/OutlineMinorMode
 
-(defun outline-body-p ()
+(defun outshine-body-p ()
   (save-excursion
     (outline-back-to-heading)
     (outline-end-of-heading)
@@ -2148,13 +2050,13 @@ may have changed."
          (progn (forward-char 1)
                 (not (outline-on-heading-p))))))
 
-(defun outline-body-visible-p ()
+(defun outshine-body-visible-p ()
   (save-excursion
     (outline-back-to-heading)
     (outline-end-of-heading)
     (not (outline-invisible-p))))
 
-(defun outline-subheadings-p ()
+(defun outshine-subheadings-p ()
   (save-excursion
     (outline-back-to-heading)
     (let ((level (funcall outline-level)))
@@ -2162,33 +2064,33 @@ may have changed."
       (and (not (eobp))
            (< level (funcall outline-level))))))
 
-(defun outline-subheadings-visible-p ()
+(defun outshine-subheadings-visible-p ()
   (interactive)
   (save-excursion
     (outline-next-heading)
     (not (outline-invisible-p))))
 
-(defun outline-hide-more ()
+(defun outshine-hide-more ()
   (interactive)
   (when (outline-on-heading-p)
-    (cond ((and (outline-body-p)
-                (outline-body-visible-p))
+    (cond ((and (outshine-body-p)
+                (outshine-body-visible-p))
            (hide-entry)
            (hide-leaves))
           (t
            (hide-subtree)))))
 
-(defun outline-show-more ()
+(defun outshine-show-more ()
   (interactive)
   (when (outline-on-heading-p)
-    (cond ((and (outline-subheadings-p)
-                (not (outline-subheadings-visible-p)))
+    (cond ((and (outshine-subheadings-p)
+                (not (outshine-subheadings-visible-p)))
            (show-children))
-          ((and (not (outline-subheadings-p))
-                (not (outline-body-visible-p)))
+          ((and (not (outshine-subheadings-p))
+                (not (outshine-body-visible-p)))
            (show-subtree))
-          ((and (outline-body-p)
-                (not (outline-body-visible-p)))
+          ((and (outshine-body-p)
+                (not (outshine-body-visible-p)))
            (show-entry))
           (t
            (show-subtree)))))
@@ -2300,9 +2202,9 @@ heading."
 (defun outshine-force-cycle-comment ()
   "Cycle subtree even if it comment."
   (interactive)
-  (setq this-command 'outline-cycle)
+  (setq this-command 'outshine-cycle)
   (let ((outshine-open-comment-trees t))
-    (call-interactively 'outline-cycle)))
+    (call-interactively 'outshine-cycle)))
 
 ;;;;; Speed commands
 
@@ -3819,14 +3721,14 @@ marking subtree (and subsequently run the tex command)."
 ;;;;; Advertise Bindings
 
 (put 'outshine-insert-heading :advertised-binding [M-ret])
-(put 'outline-cycle :advertised-binding [?\t])
+(put 'outshine-cycle :advertised-binding [?\t])
 (put 'outshine-cycle-buffer :advertised-binding [backtab])
 (put 'outline-promote :advertised-binding [M-S-left])
 (put 'outline-demote :advertised-binding [M-S-right])
 (put 'outline-move-subtree-up :advertised-binding [M-S-up])
 (put 'outline-move-subtree-down :advertised-binding [M-S-down])
-(put 'outline-hide-more :advertised-binding [M-left])
-(put 'outline-show-more :advertised-binding [M-right])
+(put 'outshine-hide-more :advertised-binding [M-left])
+(put 'outshine-show-more :advertised-binding [M-right])
 (put 'outline-next-visible-header :advertised-binding [M-down])
 (put 'outline-previous-visible-header :advertised-binding [M-up])
 (put 'show-all :advertised-binding [?\M-# \?M-a])
@@ -3837,12 +3739,12 @@ marking subtree (and subsequently run the tex command)."
 
 (easy-menu-define outshine-menu outline-minor-mode-map "Outshine menu"
   '("Outshine"
-     ["Cycle Subtree" outline-cycle
+     ["Cycle Subtree" outshine-cycle
       :active (outline-on-heading-p) :keys "<tab>"]
      ["Cycle Buffer" outshine-cycle-buffer t :keys "<backtab>"]
-     ["Show More" outline-show-more
+     ["Show More" outshine-show-more
       :active (outline-on-heading-p) :keys "M-<right>"]
-     ["Hide More" outline-hide-more
+     ["Hide More" outshine-hide-more
       :active (outline-on-heading-p) :keys "M-<left>"]
      ["Show All" show-all t :keys "M-# M-a>"]
      "--"
@@ -3883,15 +3785,15 @@ marking subtree (and subsequently run the tex command)."
 ;; Visibility Cycling
 ;; (outshine-define-key-with-fallback
 ;;  outline-minor-mode-map (kbd "<tab>")
-;;  (outline-cycle arg) (outline-on-heading-p))
+;;  (outshine-cycle arg) (outline-on-heading-p))
 
 ;; (outshine-define-key-with-fallback
 ;;  outline-minor-mode-map (kbd "TAB")
-;;  (outline-cycle arg) (outline-on-heading-p))
+;;  (outshine-cycle arg) (outline-on-heading-p))
 
 (outshine-define-key-with-fallback
  outline-minor-mode-map (kbd "TAB")
- (outline-cycle arg)
+ (outshine-cycle arg)
  (or
   (and
    (bobp)
@@ -3906,10 +3808,10 @@ marking subtree (and subsequently run the tex command)."
 ;; outline-minor-mode-map (kbd "BACKTAB") 'outshine-cycle-buffer)
 (outshine-define-key-with-fallback
  outline-minor-mode-map (kbd "M-<left>")
- (outline-hide-more) (outline-on-heading-p))
+ (outshine-hide-more) (outline-on-heading-p))
 (outshine-define-key-with-fallback
  outline-minor-mode-map (kbd "M-<right>")
- (outline-show-more) (outline-on-heading-p))
+ (outshine-show-more) (outline-on-heading-p))
 ;; Headline Insertion
 (outshine-define-key-with-fallback
  ;; outline-minor-mode-map (kbd "M-<return>")
@@ -4000,10 +3902,10 @@ marking subtree (and subsequently run the tex command)."
 
 ;;   ;; (outshine-define-key-with-fallback
 ;;   ;;  outline-minor-mode-map (kbd "J")
-;;   ;;  (outline-hide-more) (outline-on-heading-p))
+;;   ;;  (outshine-hide-more) (outline-on-heading-p))
 ;;   ;; (outshine-define-key-with-fallback
 ;;   ;;  outline-minor-mode-map (kbd "L")
-;;   ;;  (outline-show-more) (outline-on-heading-p))
+;;   ;;  (outshine-show-more) (outline-on-heading-p))
 ;;   ;; (define-key map (kbd "I") 'outline-previous-visible-heading)
 ;;   ;; (define-key map (kbd "K") 'outline-next-visible-heading)
 
