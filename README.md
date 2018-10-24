@@ -11,33 +11,33 @@
 # outshine.el &#x2014; outline with outshine outshines outline<a id="sec-1"></a>
 
 Maintainer: Adam Porter
-Version: 2.0
+Version: 2.1
 URL: <https://github.com/alphapapa/outshine>
 
 ## MetaData<a id="sec-1-1"></a>
 
     copyright: Thorsten_Jolitz
-    
+
     copyright-from: 2013+
-    
-    version: 2.0
-    
+
+    version: 2.1
+
     licence: GPL 2 or later (free software)
-    
+
     licence-url: http://www.gnu.org/licenses/
-    
+
     part-of-emacs: no
-    
+
     authors: Thorsten_Jolitz Carsten_Dominik Per_Abrahamsen
-    
+
     credits: Fabrice_Niessen Alexander_Vorobiev Jonas_Bernoulli
-    
+
     inspiration: outline-magic outxxtra out-xtra
-    
+
     keywords: emacs outlines file_structuring
-    
+
     git-repo: https://github.com/alphapapa/outshine.git
-    
+
     git-clone: git://github.com/alphapapa/outshine.git
 
 ## Commentary<a id="sec-1-2"></a>
@@ -150,7 +150,7 @@ libraries):
 
 Note that since version 2.0, outshine.el depends on outorg.el and
 navi-mode.el depends on both, outshine.el and outorg.el. So the order
-of installation should be 
+of installation should be
 
 1.  outorg
 2.  outshine
@@ -205,28 +205,28 @@ keybindings:
     buffer, outline-navigation, structure-editing and visibility
     cycling with outshine should make an Org-mode user feel right at
     home.
-    
+
     Try C-h m (describe-mode) and C-h b (describe-bindings) in an
     outshine buffer to find out more about the available functions and
     their keybindings.
-    
+
     The very useful Org speed-commands have been ported to outshine,
     here a quote from the
     [Org-mode manual](http://orgmode.org/manual/Speed-keys.html) that
     describes what they do:
-    
+
     > Single keys can be made to execute commands when the cursor is at
     > the beginning of a headline, i.e., before the first star.
-    
+
     To activate speed-keys, put this in your init-file:
-    
+
         #+BEGIN_SRC emacs-lisp
          (setq outshine-use-speed-commands t)
         #+END_SRC
-    
+
     Call \`outshine-speed-command-help' to get an overview over the
     available functionality and the keybindings.
-    
+
     Note that outshine works with 'imenu' (\`outshine-imenu') and has
     extra functionality to show the number of hidden lines in folded
     headlines (\`outshine-show-hidden-lines-cookies'). There are a few
@@ -241,7 +241,7 @@ keybindings:
     i.e. code from existing extensions to outline-minor-mode, new code
     written for outshine, as well as code ported from Org-mode to
     outshine.
-    
+
     Its extended use aims to make outshine headers more 'intelligent',
     i.e. make them know about TODO items, tags, properties, dates and
     times. This is done via the \`outshine-use-outorg' function that
@@ -251,7 +251,7 @@ keybindings:
     concept turns outshine into a kind of org-minor-mode without
     actually reimplementing Org functionality, just by reusing it with
     the help of outorg.
-    
+
     This is still work in progress. Not all Org commands make sense in
     an outshine buffer. Not all work out-of-the-box. Since there are
     many Org commands, it will take some time to check them one-by-one
