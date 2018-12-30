@@ -523,11 +523,6 @@ them set by set, separated by a nil element.  See the example for
 (defvar outshine-agenda-old-org-agenda-files nil
   "Storage for old value of `org-agenda-files'")
 
-;;;; Hooks
-
-(defvar outshine-hook nil
-  "Functions to run after `outshine' is loaded.")
-
 ;;;; Faces
 
 ;; from `org-compat.el'
@@ -1563,8 +1558,7 @@ world outside of the Org major-mode."
   :lighter "Outshine"
   (if outshine-mode
       (outshine--minor-mode-activate)
-      (outshine--minor-mode-deactivate))
-  (run-hooks 'outshine-hook))
+      (outshine--minor-mode-deactivate)))
 
 (defun outshine--minor-mode-activate ()
   "Activate Outshine.
