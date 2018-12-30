@@ -1,7 +1,7 @@
 ;;; outshine.el --- outline with outshine outshines outline
 
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
-;; Version: 2.1
+;; Version: 3.0
 ;; URL: http://github.com/alphapapa/outshine
 ;; Package-Requires: ((outorg "2.0") (cl-lib "0.5"))
 
@@ -9,7 +9,7 @@
 ;;   :PROPERTIES:
 ;;   :copyright: Thorsten_Jolitz
 ;;   :copyright-from: 2013+
-;;   :version:  2.1
+;;   :version:  3.0
 ;;   :licence:  GPL 2 or later (free software)
 ;;   :licence-url: http://www.gnu.org/licenses/
 ;;   :part-of-emacs: no
@@ -27,9 +27,9 @@
 
 ;; Outshine attempts to bring the look&feel of Org-mode to the (GNU
 ;; Emacs) world outside of the Org major-mode. It is an extension of
-;; outline-minor-mode (Org-mode itself derives from outline-mode), so
-;; there is no such thing like an 'outshine mode', only
-;; `outline-minor-mode' with outshine extensions loaded.
+;; outline-minor-mode (Org-mode itself derives from outline-mode),
+;; that should act as a silent replacement of Outline.  Just change
+;; all your calls to `outline-minor-mode' into `outshine-mode'.
 
 ;; Outshine is major-mode agnostic. At least in theory, it should work
 ;; out-of-the-box with all major-modes, even those not yet written, as
@@ -56,10 +56,8 @@
 ;; 'Outshine Project' (or 'Outshine Suite') which contains 3
 ;; libraries:
 
-;;  - outshine.el :: The core library. The `outshine-hook-function'
-;;                   must be added to the `outline-minor-mode-hook' to
-;;                   activate its extensions when outline-minor-mode
-;;                   is loaded.
+;;  - outshine.el :: The core library.  To use it, simply call
+;;                   `outshine-mode' instead of `outline-minor-mode'.
 
 ;;  - outorg.el :: Major-mode for toggling between the
 ;;                 programming-mode view and the org-mode view of
@@ -118,14 +116,14 @@
 ;; There are three ways to get outshine.el (and the other Outshine
 ;; libraries):
 
-;;  1. Clone the git repos or fork them on github
-;;     (https://github.com/alphapapa)
+;;  1. Clone the git repo or fork them on github
+;;     (https://github.com/alphapapa/outshine)
 
 ;;  2. Use the package manager to install them (from MELPA).
 
-;;  3. Simply download the raw .el files from github and copy them to a
-;;     location where Emacs can find. This is not really recommended,
-;;     since easy updating is not possible this way.
+;;  3. Simply download the raw .el files from github and copy them to
+;;     a location where Emacs can find them. This is not really
+;;     recommended, since easy updating is not possible this way.
 
 ;; Note that since version 2.0, outshine.el depends on outorg.el and
 ;; navi-mode.el depends on both, outshine.el and outorg.el. So the order
@@ -135,30 +133,25 @@
 ;;  2. outshine
 ;;  3. navi-mode (optional)
 
-;; Put this in your init.el or '.emacs' to get started:
-
-;; : #+begin_src emacs-lisp
-;; :   (require 'outshine)
-;; :   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-;; : #+end_src
+;; To get started, simply start Outshine with `M-x outshine-mode RET'
 
 ;; Add this to your init file if you always want outshine for emacs-lisp
 ;; buffers (recommended):
 
 ;; : #+begin_src emacs-lisp
-;; :   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
+;; :   (add-hook 'emacs-lisp-mode-hook 'outshine-mode)
 ;; : #+end_src
 
 ;; It makes sense to add 'outline-minor-mode' to the hooks of other
 ;; major-modes too, e.g.
 
 ;; : #+begin_src emacs-lisp
-;; :  (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'picolisp-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'clojure-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'ess-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'ledger-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'message-mode-hook 'outline-minor-mode)
+;; :  (add-hook 'LaTeX-mode-hook 'outshine-mode)
+;; :  (add-hook 'picolisp-mode-hook 'outshine-mode)
+;; :  (add-hook 'clojure-mode-hook 'outshine-mode)
+;; :  (add-hook 'ess-mode-hook 'outshine-mode)
+;; :  (add-hook 'ledger-mode-hook 'outshine-mode)
+;; :  (add-hook 'message-mode-hook 'outshine-mode)
 ;; : #+end_src
 
 ;; or whatever your favorite Emacs modes are. Then you can structure and
@@ -246,11 +239,13 @@
 
 ;;;; ChangeLog
 
-;; | date            | author(s)       | version |
-;; |-----------------+-----------------+---------|
-;; | <2014-09-20 Sa> | Thorsten Jolitz |     2.0 |
-;; | <2013-05-03 Fr> | Thorsten Jolitz |     1.0 |
-;; | <2013-02-20 Mi> | Thorsten Jolitz |     0.9 |
+;; | date            | author(s)              | version |
+;; |-----------------+------------------------+---------|
+;; | <2018-12-30 Su> | Thibault Polge         |     3.0 |
+;; | <2018-10-24 We> | (Various contributors) |     2.1 |
+;; | <2014-09-20 Sa> | Thorsten Jolitz        |     2.0 |
+;; | <2013-05-03 Fr> | Thorsten Jolitz        |     1.0 |
+;; | <2013-02-20 Mi> | Thorsten Jolitz        |     0.9 |
 
 ;;; Requires
 
@@ -289,6 +284,14 @@
   outshine-level-2 outshine-level-3 outshine-level-4
   outshine-level-5 outshine-level-6 outshine-level-7
   outshine-level-8))
+
+(defconst outshine-protected-variables
+  '(outline-regexp outline-level outline-heading-end-regexp)
+  "A list of variables to save when activating
+`outshine-mode' and restore afterwards.
+
+Don't touch this: if a variable is missing from this list, report
+a bug or send a PR." )
 
 ;; was "[;]+"
 (defconst outshine-oldschool-elisp-outline-regexp-base
@@ -437,43 +440,42 @@ A comment subtree does not open during visibility cycling.")
 
 ;;;; Vars
 
+(defvar outshine-mode-map
+  (make-sparse-keymap)
+  "The keymap for `outshine-mode'.")
+
+(defvar-local outshine-protected-variables-values nil
+"The values of variables defined by `outshine-protected-variables'.")
+
+(defvar-local outshine-font-lock-keywords nil
+  "Font locking keywords defined in the current buffer.")
+
 ;; from `outline-magic'
-(defvar outshine-promotion-headings nil
+(defvar-local outshine-promotion-headings nil
   "A sorted list of headings used for promotion/demotion commands.
 Set this to a list of headings as they are matched by `outline-regexp',
 top-level heading first.  If a mode or document needs several sets of
 outline headings (for example numbered and unnumbered sections), list
 them set by set, separated by a nil element.  See the example for
 `texinfo-mode' in the file commentary.")
-(make-variable-buffer-local 'outshine-promotion-headings)
 
-(defvar outshine-delete-leading-whitespace-from-outline-regexp-base-p nil
+(defvar-local outshine-delete-leading-whitespace-from-outline-regexp-base-p nil
   "If non-nil, delete leading whitespace from outline-regexp-base.")
-(make-variable-buffer-local
- 'outshine-delete-leading-whitespace-from-outline-regexp-base-p)
 
-(defvar outshine-enforce-no-comment-padding-p nil
+(defvar-local outshine-enforce-no-comment-padding-p nil
   "If non-nil, make sure no comment-padding is used in heading.")
-(make-variable-buffer-local
- 'outshine-enforce-no-comment-padding-p)
 
 (defvar outshine-regexp-base ""
   "Actual base for calculating the outline-regexp")
 
-(defvar outshine-normalized-comment-start ""
+(defvar-local outshine-normalized-comment-start ""
   "Comment-start regexp without leading and trailing whitespace")
-(make-variable-buffer-local
- 'outshine-normalized-comment-start)
 
-(defvar outshine-normalized-comment-end ""
+(defvar-local outshine-normalized-comment-end ""
   "Comment-end regexp without leading and trailing whitespace")
-(make-variable-buffer-local
- 'outshine-normalized-comment-end)
 
-(defvar outshine-normalized-outline-regexp-base ""
+(defvar-local outshine-normalized-outline-regexp-base ""
   "Outline-regex-base without leading and trailing whitespace")
-(make-variable-buffer-local
- 'outshine-normalized-outline-regexp-base)
 
 ;; show number of hidden lines in folded subtree
 (defvar outshine-show-hidden-lines-cookies-p nil
@@ -483,15 +485,11 @@ them set by set, separated by a nil element.  See the example for
 (defvar outshine-hidden-lines-cookies-on-p nil
   "If non-nil, hidden-lines cookies are shown, otherwise hidden.")
 
-(defvar outshine-imenu-default-generic-expression nil
+(defvar-local outshine-imenu-default-generic-expression nil
   "Expression assigned by default to `imenu-generic-expression'.")
-(make-variable-buffer-local
- 'outshine-imenu-default-generic-expression)
 
-(defvar outshine-imenu-generic-expression nil
+(defvar-local outshine-imenu-generic-expression nil
   "Expression assigned to `imenu-generic-expression'.")
-(make-variable-buffer-local
- 'outshine-imenu-generic-expression)
 
 (defvar outshine-self-insert-command-undo-counter 0
   "Used for outshine speed-commands.")
@@ -505,10 +503,8 @@ them set by set, separated by a nil element.  See the example for
 (defvar outshine-current-buffer-visibility-state nil
   "Stores current visibility state of buffer.")
 
-(defvar outshine-use-outorg-last-headline-marker (make-marker)
+(defvar-local outshine-use-outorg-last-headline-marker (make-marker)
   "Marker for last headline edited with outorg.")
-(make-variable-buffer-local
- 'outshine-use-outorg-last-headline-marker)
 
 (defvar outshine-imenu-preliminary-generic-expression nil
   "Imenu variable.")
@@ -521,22 +517,6 @@ them set by set, separated by a nil element.  See the example for
 
 (defvar outshine-agenda-old-org-agenda-files nil
   "Storage for old value of `org-agenda-files'")
-
-;; copied and adapted from ob-core.el
-;; (defvar outshine-temporary-directory)
-;; (unless (or noninteractive (boundp 'outshine-temporary-directory))
-;; ;; FIXME why this duplication?
-;;   (defvar outshine-temporary-directory
-;;     (or (and (boundp 'outshine-temporary-directory)
-;; 	     (file-exists-p outshine-temporary-directory)
-;; 	     outshine-temporary-directory)
-;; 	(make-temp-file "outshine-" t))
-;;     "Directory to hold outshine's temporary files."))
-
-;;;; Hooks
-
-(defvar outshine-hook nil
-  "Functions to run after `outshine' is loaded.")
 
 ;;;; Faces
 
@@ -959,23 +939,6 @@ significant."
       (goto-char org-log-note-marker)
       (copy-marker (org-log-beginning)))))
 
-(defadvice org-store-log-note (around org-store-log-note-around activate)
-  "Outcomment inserted log-note in Outshine buffers."
-  (let ((outshine-log-note-beg-marker
-	 ;; stay before inserted text
-	 ;; (copy-marker org-log-note-marker nil))
-	 (copy-marker (outshine-mimic-org-log-note-marker) nil))
-	(outshine-log-note-end-marker
-	 ;; stay after inserted text
-	 ;; (copy-marker org-log-note-marker t)))
-	 (copy-marker (outshine-mimic-org-log-note-marker) t)))
-    ad-do-it
-    (unless (derived-mode-p 'org-mode 'org-agenda-mode)
-      (outshine-comment-region outshine-log-note-beg-marker
-		      outshine-log-note-end-marker))
-    (move-marker outshine-log-note-beg-marker nil)
-    (move-marker outshine-log-note-end-marker nil)))
-
 ;;;; Functions
 ;;;;; Define keys with fallback
 
@@ -1157,21 +1120,18 @@ Based on `comment-start' and `comment-add'."
            "")))
        ))))
 
-;;;;; Set outline-regexp und outline-level
+;;;;; Set outline-regexp and outline-level
 
 (defun outshine-set-local-outline-regexp-and-level
   (start-regexp &optional fun end-regexp)
    "Set `outline-regexp' locally to START-REGEXP.
 Set optionally `outline-level' to FUN and
 `outline-heading-end-regexp' to END-REGEXP."
-        (make-local-variable 'outline-regexp)
-        (setq outline-regexp start-regexp)
+        (setq-local outline-regexp start-regexp)
         (and fun
-             (make-local-variable 'outline-level)
-             (setq outline-level fun))
+             (setq-local outline-level fun))
         (and end-regexp
-             (make-local-variable 'outline-heading-end-regexp)
-             (setq outline-heading-end-regexp end-regexp)))
+             (setq-local outline-heading-end-regexp end-regexp)))
 
 ;;;;; Show number of lines in hidden body
 
@@ -1339,19 +1299,27 @@ Compatibility with Emacs versions <25."
                  outline-rgxp
                  "\\{8\\} \\(.*"
                  (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)")))
-    (font-lock-add-keywords
-     nil
-     `((,heading-1-regexp 1 'outshine-level-1 t)
-       (,heading-2-regexp 1 'outshine-level-2 t)
-       (,heading-3-regexp 1 'outshine-level-3 t)
-       (,heading-4-regexp 1 'outshine-level-4 t)
-       (,heading-5-regexp 1 'outshine-level-5 t)
-       (,heading-6-regexp 1 'outshine-level-6 t)
-       (,heading-7-regexp 1 'outshine-level-7 t)
-       (,heading-8-regexp 1 'outshine-level-8 t)))
+                 "\\)"))
+        (font-lock-new-keywords
+         `((,heading-1-regexp 1 'outshine-level-1 t)
+           (,heading-2-regexp 1 'outshine-level-2 t)
+           (,heading-3-regexp 1 'outshine-level-3 t)
+           (,heading-4-regexp 1 'outshine-level-4 t)
+           (,heading-5-regexp 1 'outshine-level-5 t)
+           (,heading-6-regexp 1 'outshine-level-6 t)
+           (,heading-7-regexp 1 'outshine-level-7 t)
+           (,heading-8-regexp 1 'outshine-level-8 t))))
+
+    (add-to-list 'outshine-font-lock-keywords font-lock-new-keywords)
+    (font-lock-add-keywords nil font-lock-new-keywords)
     (outshine-font-lock-flush)))
 
+(defun outshine-unfontify ()
+  "Remove existing fontification."
+
+  (font-lock-remove-keywords nil (car outshine-font-lock-keywords))
+  (setq outshine-font-lock-keywords nil)
+  (outshine-font-lock-flush))
 
 ;;;;; Functions for speed-commands
 
@@ -1400,7 +1368,7 @@ COMMANDS is a list of alternating OLDDEF NEWDEF command names."
           (outshine-defkey map (vector 'remap old) new)
         (substitute-key-definition old new map global-map)))))
 
-(outshine-remap outline-minor-mode-map
+(outshine-remap outshine-mode-map
              'self-insert-command 'outshine-self-insert-command)
 
 ;;;;; Functions for hiding comment-subtrees
@@ -1575,13 +1543,57 @@ function was called upon."
     (call-interactively fun))
   (outorg-copy-edits-and-exit))
 
-;;;;; Hook function
+;;;;; Minor mode
 
 ;;;###autoload
-(defun outshine-hook-function ()
-  "Add this function to outline-minor-mode-hook"
+(define-minor-mode outshine-mode
+  "Outshine brings the look&feel of Org-mode to the (GNU Emacs)
+world outside of the Org major-mode."
+  :init-value nil
+  :lighter "Outshine"
+  (if outshine-mode
+      (outshine--minor-mode-activate)
+      (outshine--minor-mode-deactivate)))
+
+(defun outshine--minor-mode-activate ()
+  "Activate Outshine.
+
+Don't use this function, the public interface is
+`outshine-mode'."
+
+  ;; Ensure outline is on
+  (unless outline-minor-mode
+    (outline-minor-mode 1))
+
+  ;; Save variables
+  (setq outshine-protected-variables-values (mapcar 'symbol-value outshine-protected-variables))
+
+  ;; Install deactivation hook
+  (add-hook 'outline-minor-mode-hook 'outshine--outline-minor-mode-hook)
+
+  ;; Advise org-store-log-note
+  (defadvice org-store-log-note (around org-store-log-note-around activate)
+    "Outcomment inserted log-note in Outshine buffers."
+    (when outshine-mode
+      (let ((outshine-log-note-beg-marker
+	           ;; stay before inserted text
+	           ;; (copy-marker org-log-note-marker nil))
+	           (copy-marker (outshine-mimic-org-log-note-marker) nil))
+	          (outshine-log-note-end-marker
+	           ;; stay after inserted text
+	           ;; (copy-marker org-log-note-marker t)))
+	           (copy-marker (outshine-mimic-org-log-note-marker) t)))
+        ad-do-it
+        (unless (derived-mode-p 'org-mode 'org-agenda-mode)
+          (outshine-comment-region outshine-log-note-beg-marker
+		                               outshine-log-note-end-marker))
+        (move-marker outshine-log-note-beg-marker nil)
+        (move-marker outshine-log-note-end-marker nil))))
+
+  ;; Compute basic outline regular expressions
   (outshine-set-outline-regexp-base)
   (outshine-normalize-regexps)
+
   (let ((out-regexp (outshine-calc-outline-regexp)))
     (outshine-set-local-outline-regexp-and-level
      out-regexp
@@ -1610,9 +1622,35 @@ function was called upon."
             (_ (user-error "Invalid value for variable `outshine-fontify'")))
       (outshine-fontify-headlines out-regexp))))
 
-;; ;; add this to your .emacs
-;; (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+(defun outshine--minor-mode-deactivate ()
+  "Deactivate Outshine.
 
+Don't use this function, the public interface is
+`outshine-mode'."
+  ;; Restore variables
+  (cl-mapc 'set outshine-protected-variables outshine-protected-variables-values)
+
+  ;; Show everything
+  (outline-show-all)
+
+  ;; Deactivate font-lock
+  (outshine-unfontify))
+
+;;;###autoload
+(defun outshine-hook-function ()
+  "DEPRECATED, use `outshine-mode'."
+  (warn "`outshine-hook-function' has been deprecated, use `outshine-mode'")
+  (outshine-mode 1))
+
+(defun outshine--outline-minor-mode-hook ()
+  "Deactivate `outshine-mode' if `outshine-mode' but not `outline-minor-mode'.
+
+This function will be hooked to `outline-minor-mode'."
+  (when (and outshine-mode
+             (not outline-minor-mode))
+    (outshine-mode 0)))
+
+ 
 ;;;;; Additional outline functions
 ;;;;;; Functions from `outline-magic'
 
@@ -3718,26 +3756,10 @@ marking subtree (and subsequently run the tex command)."
 ;;   (menu-item "" CMD :filter (lambda (cmd) (if foo cmd))).
 
 ;;;; Menus
-;;;;; Advertise Bindings
-
-(put 'outshine-insert-heading :advertised-binding [M-ret])
-(put 'outshine-cycle :advertised-binding [?\t])
-(put 'outshine-cycle-buffer :advertised-binding [backtab])
-(put 'outline-promote :advertised-binding [M-S-left])
-(put 'outline-demote :advertised-binding [M-S-right])
-(put 'outline-move-subtree-up :advertised-binding [M-S-up])
-(put 'outline-move-subtree-down :advertised-binding [M-S-down])
-(put 'outshine-hide-more :advertised-binding [M-left])
-(put 'outshine-show-more :advertised-binding [M-right])
-(put 'outline-next-visible-header :advertised-binding [M-down])
-(put 'outline-previous-visible-header :advertised-binding [M-up])
-(put 'show-all :advertised-binding [?\M-# \?M-a])
-(put 'outline-up-heading :advertised-binding [?\M-# ?\M-u])
-(put 'outorg-edit-as-org :advertised-binding [?\M-# ?\M-#])
 
 ;;;;; Define Menu
 
-(easy-menu-define outshine-menu outline-minor-mode-map "Outshine menu"
+(easy-menu-define outshine-menu outshine-mode-map "Outshine menu"
   '("Outshine"
      ["Cycle Subtree" outshine-cycle
       :active (outline-on-heading-p) :keys "<tab>"]
@@ -3769,9 +3791,9 @@ marking subtree (and subsequently run the tex command)."
 
 ;; add "Outshine" menu item
 
-;; (easy-menu-add outshine-menu outline-minor-mode-map)
+;; (easy-menu-add outshine-menu outshine-mode-map)
 ;; get rid of "Outline" menu item
-(define-key outline-minor-mode-map [menu-bar outline] 'undefined)
+(define-key outshine-mode-map [menu-bar outline] 'undefined)
 
 ;;;; Keybindings
 ;;;;; Principal Keybindings
@@ -3784,15 +3806,15 @@ marking subtree (and subsequently run the tex command)."
 ;;  Adapted from `org-mode' and `outline-mode-easy-bindings'
 ;; Visibility Cycling
 ;; (outshine-define-key-with-fallback
-;;  outline-minor-mode-map (kbd "<tab>")
+;;  outshine-mode-map (kbd "<tab>")
 ;;  (outshine-cycle arg) (outline-on-heading-p))
 
 ;; (outshine-define-key-with-fallback
-;;  outline-minor-mode-map (kbd "TAB")
+;;  outshine-mode-map (kbd "TAB")
 ;;  (outshine-cycle arg) (outline-on-heading-p))
 
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "TAB")
+ outshine-mode-map (kbd "TAB")
  (outshine-cycle arg)
  (or
   (and
@@ -3803,45 +3825,45 @@ marking subtree (and subsequently run the tex command)."
 
 ;; works on the console too
 (define-key
-  outline-minor-mode-map (kbd "M-TAB") 'outshine-cycle-buffer)
-;; outline-minor-mode-map (kbd "<backtab>") 'outshine-cycle-buffer)
-;; outline-minor-mode-map (kbd "BACKTAB") 'outshine-cycle-buffer)
+  outshine-mode-map (kbd "M-TAB") 'outshine-cycle-buffer)
+;; outshine-mode-map (kbd "<backtab>") 'outshine-cycle-buffer)
+;; outshine-mode-map (kbd "BACKTAB") 'outshine-cycle-buffer)
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-<left>")
+ outshine-mode-map (kbd "M-<left>")
  (outshine-hide-more) (outline-on-heading-p))
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-<right>")
+ outshine-mode-map (kbd "M-<right>")
  (outshine-show-more) (outline-on-heading-p))
 ;; Headline Insertion
 (outshine-define-key-with-fallback
- ;; outline-minor-mode-map (kbd "M-<return>")
- outline-minor-mode-map (kbd "M-RET")
+ ;; outshine-mode-map (kbd "M-<return>")
+ outshine-mode-map (kbd "M-RET")
  (outshine-insert-heading) (outline-on-heading-p))
 ;; Structure Editing
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-S-<left>")
+ outshine-mode-map (kbd "M-S-<left>")
  (outline-promote) (outline-on-heading-p))
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-S-<right>")
+ outshine-mode-map (kbd "M-S-<right>")
  (outline-demote) (outline-on-heading-p))
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-S-<up>")
+ outshine-mode-map (kbd "M-S-<up>")
  (outline-move-subtree-up) (outline-on-heading-p))
 (outshine-define-key-with-fallback
- outline-minor-mode-map (kbd "M-S-<down>")
+ outshine-mode-map (kbd "M-S-<down>")
  (outline-move-subtree-down) (outline-on-heading-p))
 ;; Motion
 (define-key
-  ;; outline-minor-mode-map [(meta up)]
-  outline-minor-mode-map [M-up]
-  ;; outline-minor-mode-map (kbd "M-<up>")
-  ;; outline-minor-mode-map (kbd "<M-up>")
+  ;; outshine-mode-map [(meta up)]
+  outshine-mode-map [M-up]
+  ;; outshine-mode-map (kbd "M-<up>")
+  ;; outshine-mode-map (kbd "<M-up>")
   'outline-previous-visible-heading)
 (define-key
-  ;; outline-minor-mode-map [(meta down)]
-  outline-minor-mode-map [M-down]
-  ;; outline-minor-mode-map (kbd "M-<down>")
-  ;; outline-minor-mode-map (kbd "<M-down>")
+  ;; outshine-mode-map [(meta down)]
+  outshine-mode-map [M-down]
+  ;; outshine-mode-map (kbd "M-<down>")
+  ;; outshine-mode-map (kbd "<M-down>")
   'outline-next-visible-heading)
 
 ;;;;; Other Keybindings
@@ -3859,7 +3881,7 @@ marking subtree (and subsequently run the tex command)."
 
 ;; ;; Set the outline-minor-mode-prefix key in your init-file
 ;; ;; before loading outline-mode
-;; (let ((map (lookup-key outline-minor-mode-map outline-minor-mode-prefix)))
+;; (let ((map (lookup-key outshine-mode-map outline-minor-mode-prefix)))
 ;;   ;; define sub-prefix
 ;;   ;; (define-key map (kbd "C-v") nil)
 ;;   (define-key map (kbd "M-+") nil)
@@ -3898,21 +3920,15 @@ marking subtree (and subsequently run the tex command)."
 ;;     'outshine-table-toggle-coordinate-overlays)
 ;;   (define-key map (kbd "~") 'outshine-table-create-with-table.el)
 
-;; ;;;;;; [M-# Letter]
+;; ;;;;;; [M-# Letter];; ;;;;;; [M-# Letter]
 
 ;;   ;; (outshine-define-key-with-fallback
-;;   ;;  outline-minor-mode-map (kbd "J")
+;;   ;;  outshine-mode-map (kbd "J")
 ;;   ;;  (outshine-hide-more) (outline-on-heading-p))
-;;   ;; (outshine-define-key-with-fallback
-;;   ;;  outline-minor-mode-map (kbd "L")
-;;   ;;  (outshine-show-more) (outline-on-heading-p))
+;;   ;; outshine-define-key-with-fallback
+;;   ;;  outshine-mode-map
 ;;   ;; (define-key map (kbd "I") 'outline-previous-visible-heading)
-;;   ;; (define-key map (kbd "K") 'outline-next-visible-heading)
-
-;; ;;;;;; [M-# letter]
-
-
-;; ;;;;;; [M-# M-Punctuation]
+;;   ;; (define-key map (kbd "K") 'outline-next-visible-heading[M-# M-Punctuation]
 
 ;;   ;; (define-key map (kbd "C-^") 'outshine-up-element)
 ;;   ;; (define-key map (kbd "M-^") 'outshine-up-element)
@@ -4285,10 +4301,7 @@ marking subtree (and subsequently run the tex command)."
 ;; ;; C-c C-x <left>	org-shiftcontrolleft
 ;; ;; C-c C-x <right>      org-shiftcontrolright
 
-
-;;; Run hooks and provide
-
-(run-hooks 'outshine-hook)
+;;; outshine.el ends soon
 
 (provide 'outshine)
 
