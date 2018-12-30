@@ -1,7 +1,7 @@
 ;;; outshine.el --- outline with outshine outshines outline
 
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
-;; Version: 2.1
+;; Version: 3.0
 ;; URL: http://github.com/alphapapa/outshine
 ;; Package-Requires: ((outorg "2.0") (cl-lib "0.5"))
 
@@ -9,7 +9,7 @@
 ;;   :PROPERTIES:
 ;;   :copyright: Thorsten_Jolitz
 ;;   :copyright-from: 2013+
-;;   :version:  2.1
+;;   :version:  3.0
 ;;   :licence:  GPL 2 or later (free software)
 ;;   :licence-url: http://www.gnu.org/licenses/
 ;;   :part-of-emacs: no
@@ -27,9 +27,9 @@
 
 ;; Outshine attempts to bring the look&feel of Org-mode to the (GNU
 ;; Emacs) world outside of the Org major-mode. It is an extension of
-;; outline-minor-mode (Org-mode itself derives from outline-mode), so
-;; there is no such thing like an 'outshine mode', only
-;; `outline-minor-mode' with outshine extensions loaded.
+;; outline-minor-mode (Org-mode itself derives from outline-mode),
+;; that should act as a silent replacement of Outline.  Just change
+;; all your calls to `outline-minor-mode' into `outshine-mode'.
 
 ;; Outshine is major-mode agnostic. At least in theory, it should work
 ;; out-of-the-box with all major-modes, even those not yet written, as
@@ -56,10 +56,8 @@
 ;; 'Outshine Project' (or 'Outshine Suite') which contains 3
 ;; libraries:
 
-;;  - outshine.el :: The core library. The `outshine-hook-function'
-;;                   must be added to the `outline-minor-mode-hook' to
-;;                   activate its extensions when outline-minor-mode
-;;                   is loaded.
+;;  - outshine.el :: The core library.  To use it, simply call
+;;                   `outshine-mode' instead of `outline-minor-mode'.
 
 ;;  - outorg.el :: Major-mode for toggling between the
 ;;                 programming-mode view and the org-mode view of
@@ -118,14 +116,14 @@
 ;; There are three ways to get outshine.el (and the other Outshine
 ;; libraries):
 
-;;  1. Clone the git repos or fork them on github
-;;     (https://github.com/alphapapa)
+;;  1. Clone the git repo or fork them on github
+;;     (https://github.com/alphapapa/outshine)
 
 ;;  2. Use the package manager to install them (from MELPA).
 
-;;  3. Simply download the raw .el files from github and copy them to a
-;;     location where Emacs can find. This is not really recommended,
-;;     since easy updating is not possible this way.
+;;  3. Simply download the raw .el files from github and copy them to
+;;     a location where Emacs can find them. This is not really
+;;     recommended, since easy updating is not possible this way.
 
 ;; Note that since version 2.0, outshine.el depends on outorg.el and
 ;; navi-mode.el depends on both, outshine.el and outorg.el. So the order
@@ -135,30 +133,25 @@
 ;;  2. outshine
 ;;  3. navi-mode (optional)
 
-;; Put this in your init.el or '.emacs' to get started:
-
-;; : #+begin_src emacs-lisp
-;; :   (require 'outshine)
-;; :   (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-;; : #+end_src
+;; To get started, simply start Outshine with `M-x outshine-mode RET'
 
 ;; Add this to your init file if you always want outshine for emacs-lisp
 ;; buffers (recommended):
 
 ;; : #+begin_src emacs-lisp
-;; :   (add-hook 'emacs-lisp-mode-hook 'outline-minor-mode)
+;; :   (add-hook 'emacs-lisp-mode-hook 'outshine-mode)
 ;; : #+end_src
 
 ;; It makes sense to add 'outline-minor-mode' to the hooks of other
 ;; major-modes too, e.g.
 
 ;; : #+begin_src emacs-lisp
-;; :  (add-hook 'LaTeX-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'picolisp-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'clojure-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'ess-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'ledger-mode-hook 'outline-minor-mode)
-;; :  (add-hook 'message-mode-hook 'outline-minor-mode)
+;; :  (add-hook 'LaTeX-mode-hook 'outshine-mode)
+;; :  (add-hook 'picolisp-mode-hook 'outshine-mode)
+;; :  (add-hook 'clojure-mode-hook 'outshine-mode)
+;; :  (add-hook 'ess-mode-hook 'outshine-mode)
+;; :  (add-hook 'ledger-mode-hook 'outshine-mode)
+;; :  (add-hook 'message-mode-hook 'outshine-mode)
 ;; : #+end_src
 
 ;; or whatever your favorite Emacs modes are. Then you can structure and
@@ -246,11 +239,13 @@
 
 ;;;; ChangeLog
 
-;; | date            | author(s)       | version |
-;; |-----------------+-----------------+---------|
-;; | <2014-09-20 Sa> | Thorsten Jolitz |     2.0 |
-;; | <2013-05-03 Fr> | Thorsten Jolitz |     1.0 |
-;; | <2013-02-20 Mi> | Thorsten Jolitz |     0.9 |
+;; | date            | author(s)              | version |
+;; |-----------------+------------------------+---------|
+;; | <2018-12-30 Su> | Thibault Polge         |     3.0 |
+;; | <2018-10-24 We> | (Various contributors) |     2.1 |
+;; | <2014-09-20 Sa> | Thorsten Jolitz        |     2.0 |
+;; | <2013-05-03 Fr> | Thorsten Jolitz        |     1.0 |
+;; | <2013-02-20 Mi> | Thorsten Jolitz        |     0.9 |
 
 ;;; Requires
 
