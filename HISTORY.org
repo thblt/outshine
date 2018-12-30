@@ -1,7 +1,7 @@
-* TODO Version 2.1
+* TODO Version 2.2
 
 ** TODO add more 'outshine-use-outorg' commands
-** TODO enable merging org-agenda and outshine-agenda 
+** TODO enable merging org-agenda and outshine-agenda
 ** TODO make outshine-agenda read/write
 ** TODO implement a second folding mechanism for outshine
 

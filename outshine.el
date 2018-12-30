@@ -1,7 +1,7 @@
 ;;; outshine.el --- outline with outshine outshines outline
 
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
-;; Version: 2.0
+;; Version: 2.1
 ;; URL: http://github.com/alphapapa/outshine
 ;; Package-Requires: ((outorg "2.0") (cl-lib "0.5"))
 
@@ -9,7 +9,7 @@
 ;;   :PROPERTIES:
 ;;   :copyright: Thorsten_Jolitz
 ;;   :copyright-from: 2013+
-;;   :version:  2.0
+;;   :version:  2.1
 ;;   :licence:  GPL 2 or later (free software)
 ;;   :licence-url: http://www.gnu.org/licenses/
 ;;   :part-of-emacs: no
