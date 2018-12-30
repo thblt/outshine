@@ -1635,6 +1635,9 @@ Don't use this function, the public interface is
   ;; Restore variables
   (cl-mapc 'set outshine-protected-variables outshine-protected-variables-values)
 
+  ;; Show everything
+  (outline-show-all)
+
   ;; Deactivate font-lock
   (outshine-unfontify))
 
