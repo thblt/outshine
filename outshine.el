@@ -544,7 +544,7 @@ certain level is calculated. "
 nil    Never
 white  Only in completely white lines
 t      Everywhere except in headlines"
-  :group 'outlines
+  :group 'outshine
   :type '(choice (const :tag "Never" nil)
                  (const :tag "Only in completely white lines" white)
                  (const :tag "Everywhere except in headlines" t)
