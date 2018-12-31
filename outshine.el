@@ -1,27 +1,31 @@
 ;;; outshine.el --- outline with outshine outshines outline
 
-;; FIXME: Enable and test with lexical-binding.
+;; Copyright (c) 2013--2018 Thorsten Jolitz and contributors.
 
+;; Author: Thorsten Jolitz
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; Version: 3.0
-;; URL: http://github.com/alphapapa/outshine
+;; URL: https://github.com/alphapapa/outshine
 ;; Package-Requires: ((outorg "2.0") (cl-lib "0.5"))
+;; Licence: GPL2+
+;; Keywords: convenience
 
-;;;; MetaData
-;;   :PROPERTIES:
-;;   :copyright: Thorsten_Jolitz
-;;   :copyright-from: 2013+
-;;   :version:  3.0
-;;   :licence:  GPL 2 or later (free software)
-;;   :licence-url: http://www.gnu.org/licenses/
-;;   :part-of-emacs: no
-;;   :authors: Thorsten_Jolitz Carsten_Dominik Per_Abrahamsen
-;;   :credits:  Fabrice_Niessen Alexander_Vorobiev Jonas_Bernoulli
-;;   :inspiration: outline-magic outxxtra out-xtra
-;;   :keywords: emacs outlines file_structuring
-;;   :git-repo: https://github.com/alphapapa/outshine.git
-;;   :git-clone: git://github.com/alphapapa/outshine.git
-;;   :END:
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 2 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; FIXME: Enable and test with lexical-binding.
 
 ;;; Commentary:
 
