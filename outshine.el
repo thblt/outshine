@@ -280,10 +280,10 @@
   "Maximal level of headlines recognized.")
 
 ;; copied from org-source.el
-(defconst outshine-level-faces '(outshine-level-1
-  outshine-level-2 outshine-level-3 outshine-level-4
-  outshine-level-5 outshine-level-6 outshine-level-7
-  outshine-level-8))
+(defconst outshine-level-faces
+  '(outshine-level-1 outshine-level-2 outshine-level-3 outshine-level-4
+                     outshine-level-5 outshine-level-6 outshine-level-7
+                     outshine-level-8))
 
 (defconst outshine-protected-variables
   '(outline-regexp outline-level outline-heading-end-regexp)
@@ -445,7 +445,7 @@ A comment subtree does not open during visibility cycling.")
   "The keymap for `outshine-mode'.")
 
 (defvar-local outshine-protected-variables-values nil
-"The values of variables defined by `outshine-protected-variables'.")
+  "The values of variables defined by `outshine-protected-variables'.")
 
 (defvar-local outshine-font-lock-keywords nil
   "Font locking keywords defined in the current buffer.")
@@ -611,7 +611,7 @@ any other entries, and any resulting duplicates will be removed entirely."
   "Face used for level 3 headlines."
   :group 'outshine-faces)
 
-   ;; originally copied from font-lock-comment-face
+;; originally copied from font-lock-comment-face
 (defface outshine-level-4
   (outshine-compatible-face 'outline-4
     '((((class color) (min-colors 88)
@@ -630,7 +630,7 @@ any other entries, and any resulting duplicates will be removed entirely."
   "Face used for level 4 headlines."
   :group 'outshine-faces)
 
- ;; originally copied from font-lock-type-face
+;; originally copied from font-lock-type-face
 (defface outshine-level-5
   (outshine-compatible-face 'outline-5
     '((((class color) (min-colors 16)
@@ -641,7 +641,7 @@ any other entries, and any resulting duplicates will be removed entirely."
   "Face used for level 5 headlines."
   :group 'outshine-faces)
 
- ;; originally copied from font-lock-constant-face
+;; originally copied from font-lock-constant-face
 (defface outshine-level-6
   (outshine-compatible-face 'outline-6
     '((((class color) (min-colors 16)
@@ -651,7 +651,7 @@ any other entries, and any resulting duplicates will be removed entirely."
       (((class color) (min-colors 8)) (:foreground "magenta")))) "Face used for level 6 headlines."
   :group 'outshine-faces)
 
- ;; originally copied from font-lock-builtin-face
+;; originally copied from font-lock-builtin-face
 (defface outshine-level-7
   (outshine-compatible-face 'outline-7
     '((((class color) (min-colors 16)
@@ -662,7 +662,7 @@ any other entries, and any resulting duplicates will be removed entirely."
   "Face used for level 7 headlines."
   :group 'outshine-faces)
 
- ;; originally copied from font-lock-string-face
+;; originally copied from font-lock-string-face
 (defface outshine-level-8
   (outshine-compatible-face 'outline-8
     '((((class color) (min-colors 16)
@@ -945,7 +945,7 @@ significant."
 ;; copied and adapted from Alexander Vorobiev
 ;; http://www.mail-archive.com/emacs-orgmode@gnu.org/msg70648.html
 (defmacro outshine-define-key-with-fallback
-  (keymap key def condition &optional mode)
+    (keymap key def condition &optional mode)
   "Define key with fallback.
 Binds KEY to definition DEF in keymap KEYMAP, the binding is
 active when the CONDITION is true. Otherwise turns MODE off and
@@ -1012,7 +1012,7 @@ recover it by stripping off \"-map\" from KEYMAP name."
        (setq outshine-normalized-comment-start
              (if outshine-preserve-delimiter-whitespace
                  comment-start
-                 (outshine-chomp comment-start))))
+               (outshine-chomp comment-start))))
   (and comment-end
        (setq outshine-normalized-comment-end
              (outshine-chomp comment-end)))
@@ -1213,8 +1213,8 @@ Set optionally `outline-level' to FUN and
   "Return outline-base-string at level LEVEL."
   (let* ((star (outshine-transform-normalized-outline-regexp-base-to-string))
          (stars star))
-       (dotimes (i (1- level) stars)
-         (setq stars (concat stars star)))))
+    (dotimes (i (1- level) stars)
+      (setq stars (concat stars star)))))
 
 (defun outshine-transform-normalized-outline-regexp-base-to-string ()
   "Transform 'outline-regexp-base' to string by stripping off special chars."
@@ -1231,10 +1231,10 @@ top-level heading first."
   (let ((list-of-heading-levels
          `((,(outshine-calc-outline-string-at-level 1) . 1))))
     (dotimes (i (1- max-level) list-of-heading-levels)
-            (add-to-list
-             'list-of-heading-levels
-             `(,(outshine-calc-outline-string-at-level (+ i 2)) . ,(+ i 2))
-             'APPEND))))
+      (add-to-list
+       'list-of-heading-levels
+       `(,(outshine-calc-outline-string-at-level (+ i 2)) . ,(+ i 2))
+       'APPEND))))
 
 ;;;;; Fontify the headlines
 
@@ -1253,62 +1253,62 @@ Compatibility with Emacs versions <25."
   "Calculate heading regexps for font-lock mode."
   (let* ((outline-rgxp (substring outline-regexp 0 -8))
          (heading-1-regexp
-         (format "%s%s%s%s"
-                 outline-rgxp
-                 "\\{1\\} \\(.*"
-                 (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)"))
-        (heading-2-regexp
-         (format "%s%s%s%s"
-                 outline-rgxp
-                 "\\{2\\} \\(.*"
-                 (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)"))
-        (heading-3-regexp
-         (format "%s%s%s%s"
-                 outline-rgxp
-                 "\\{3\\} \\(.*"
-                 (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)"))
-        (heading-4-regexp
-         (format "%s%s%s%s"
-                 outline-rgxp
-                 "\\{4\\} \\(.*"
-                 (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)"))
-        (heading-5-regexp
-         (format "%s%s%s%s"
-                 outline-rgxp
-                 "\\{5\\} \\(.*"
-                 (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)"))
-        (heading-6-regexp
-         (format "%s%s%s%s"
-                 outline-rgxp
-                 "\\{6\\} \\(.*"
-                 (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)"))
-        (heading-7-regexp
-         (format "%s%s%s%s"
-                 outline-rgxp
-                 "\\{7\\} \\(.*"
-                 (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)"))
-        (heading-8-regexp
-         (format "%s%s%s%s"
-                 outline-rgxp
-                 "\\{8\\} \\(.*"
-                 (if outshine-fontify-whole-heading-line "\n?" "")
-                 "\\)"))
-        (font-lock-new-keywords
-         `((,heading-1-regexp 1 'outshine-level-1 t)
-           (,heading-2-regexp 1 'outshine-level-2 t)
-           (,heading-3-regexp 1 'outshine-level-3 t)
-           (,heading-4-regexp 1 'outshine-level-4 t)
-           (,heading-5-regexp 1 'outshine-level-5 t)
-           (,heading-6-regexp 1 'outshine-level-6 t)
-           (,heading-7-regexp 1 'outshine-level-7 t)
-           (,heading-8-regexp 1 'outshine-level-8 t))))
+          (format "%s%s%s%s"
+                  outline-rgxp
+                  "\\{1\\} \\(.*"
+                  (if outshine-fontify-whole-heading-line "\n?" "")
+                  "\\)"))
+         (heading-2-regexp
+          (format "%s%s%s%s"
+                  outline-rgxp
+                  "\\{2\\} \\(.*"
+                  (if outshine-fontify-whole-heading-line "\n?" "")
+                  "\\)"))
+         (heading-3-regexp
+          (format "%s%s%s%s"
+                  outline-rgxp
+                  "\\{3\\} \\(.*"
+                  (if outshine-fontify-whole-heading-line "\n?" "")
+                  "\\)"))
+         (heading-4-regexp
+          (format "%s%s%s%s"
+                  outline-rgxp
+                  "\\{4\\} \\(.*"
+                  (if outshine-fontify-whole-heading-line "\n?" "")
+                  "\\)"))
+         (heading-5-regexp
+          (format "%s%s%s%s"
+                  outline-rgxp
+                  "\\{5\\} \\(.*"
+                  (if outshine-fontify-whole-heading-line "\n?" "")
+                  "\\)"))
+         (heading-6-regexp
+          (format "%s%s%s%s"
+                  outline-rgxp
+                  "\\{6\\} \\(.*"
+                  (if outshine-fontify-whole-heading-line "\n?" "")
+                  "\\)"))
+         (heading-7-regexp
+          (format "%s%s%s%s"
+                  outline-rgxp
+                  "\\{7\\} \\(.*"
+                  (if outshine-fontify-whole-heading-line "\n?" "")
+                  "\\)"))
+         (heading-8-regexp
+          (format "%s%s%s%s"
+                  outline-rgxp
+                  "\\{8\\} \\(.*"
+                  (if outshine-fontify-whole-heading-line "\n?" "")
+                  "\\)"))
+         (font-lock-new-keywords
+          `((,heading-1-regexp 1 'outshine-level-1 t)
+            (,heading-2-regexp 1 'outshine-level-2 t)
+            (,heading-3-regexp 1 'outshine-level-3 t)
+            (,heading-4-regexp 1 'outshine-level-4 t)
+            (,heading-5-regexp 1 'outshine-level-5 t)
+            (,heading-6-regexp 1 'outshine-level-6 t)
+            (,heading-7-regexp 1 'outshine-level-7 t)
+            (,heading-8-regexp 1 'outshine-level-8 t))))
 
     (add-to-list 'outshine-font-lock-keywords font-lock-new-keywords)
     (font-lock-add-keywords nil font-lock-new-keywords)
@@ -1343,16 +1343,12 @@ Compatibility with Emacs versions <25."
   "Hook for activating single-letter speed commands.
 `outshine-speed-commands-default' specifies a minimal command set.
 Use `outshine-speed-commands-user' for further customization."
-  (when (or (and
-             (bolp)
-             (looking-at outline-regexp))
-             ;; (looking-at (outshine-calc-outline-regexp)))
-            (and
-             (functionp outshine-use-speed-commands)
-             (funcall outshine-use-speed-commands)))
+  (when (or (and (bolp)
+                 (looking-at outline-regexp))
+            (and (functionp outshine-use-speed-commands)
+                 (funcall outshine-use-speed-commands)))
     (cdr (assoc keys (append outshine-speed-commands-user
                              outshine-speed-commands-default)))))
-
 
 (defun outshine-defkey (keymap key def)
   "Define a KEY in a KEYMAP with definition DEF."
@@ -1369,7 +1365,7 @@ COMMANDS is a list of alternating OLDDEF NEWDEF command names."
         (substitute-key-definition old new map global-map)))))
 
 (outshine-remap outshine-mode-map
-             'self-insert-command 'outshine-self-insert-command)
+                'self-insert-command 'outshine-self-insert-command)
 
 ;;;;; Functions for hiding comment-subtrees
 
@@ -1479,15 +1475,15 @@ COMMANDS is a list of alternating OLDDEF NEWDEF command names."
 ;;         (list rgx4 rgx3 rgx2 rgx1 rgx0)))))
 
 (defun outshine-comment-region (beg end &optional arg)
-       "Use comment-style that always inserts at BOL.
+  "Use comment-style that always inserts at BOL.
 Call `comment-region' with a comment-style that guarantees
    insertion of comment-start markers at beginning-of-line."
-       (interactive "r")
-       (let ((comment-style
-              (if (member comment-style '(indent-or-triple indent))
-                  'plain
-                comment-style)))
-         (comment-region beg end arg)))
+  (interactive "r")
+  (let ((comment-style
+         (if (member comment-style '(indent-or-triple indent))
+             'plain
+           comment-style)))
+    (comment-region beg end arg)))
 
 (defun outshine-get-outorg-edit-buffer-content (&optional buf-or-file)
   "Get content of buffer `outorg-edit-buffer-name.'
@@ -1516,7 +1512,6 @@ Use current buffer for conversion, unless BUF-OR-FILE is given."
   (setq outorg-org-finish-function-called-p t)
   (org-store-log-note)
   (outorg-copy-edits-and-exit))
-  ;; (exit-recursive-edit))
 
 (defun outshine-use-outorg (fun &optional whole-buffer-p &rest funargs)
   "Use outorg to call FUN with FUNARGS on subtree or thing at point.
@@ -1553,7 +1548,7 @@ world outside of the Org major-mode."
   :lighter "Outshine"
   (if outshine-mode
       (outshine--minor-mode-activate)
-      (outshine--minor-mode-deactivate)))
+    (outshine--minor-mode-deactivate)))
 
 (defun outshine--minor-mode-activate ()
   "Activate Outshine.
@@ -1576,17 +1571,15 @@ Don't use this function, the public interface is
     "Outcomment inserted log-note in Outshine buffers."
     (when outshine-mode
       (let ((outshine-log-note-beg-marker
-	           ;; stay before inserted text
-	           ;; (copy-marker org-log-note-marker nil))
-	           (copy-marker (outshine-mimic-org-log-note-marker) nil))
-	          (outshine-log-note-end-marker
-	           ;; stay after inserted text
-	           ;; (copy-marker org-log-note-marker t)))
-	           (copy-marker (outshine-mimic-org-log-note-marker) t)))
+	     ;; stay before inserted text
+	     (copy-marker (outshine-mimic-org-log-note-marker) nil))
+	    (outshine-log-note-end-marker
+	     ;; stay after inserted text
+	     (copy-marker (outshine-mimic-org-log-note-marker) t)))
         ad-do-it
         (unless (derived-mode-p 'org-mode 'org-agenda-mode)
           (outshine-comment-region outshine-log-note-beg-marker
-		                               outshine-log-note-end-marker))
+		                   outshine-log-note-end-marker))
         (move-marker outshine-log-note-beg-marker nil)
         (move-marker outshine-log-note-end-marker nil))))
 
@@ -1605,7 +1598,7 @@ Don't use this function, the public interface is
     (and outshine-imenu-show-headlines-p
          (set (make-local-variable
                'outshine-imenu-preliminary-generic-expression)
-               `((nil ,(concat out-regexp "\\(.*$\\)") 1)))
+              `((nil ,(concat out-regexp "\\(.*$\\)") 1)))
 	 (if imenu-generic-expression
 	     (add-to-list 'imenu-generic-expression
                           (car outshine-imenu-preliminary-generic-expression))
@@ -1944,9 +1937,9 @@ Essentially a much simplified version of `next-line'."
     ;; Run `outshine-cycle' as if at the top of the buffer.
     (let ((outshine-org-style-global-cycling-at-bob-p nil)
           (current-prefix-arg nil))
-    (save-excursion
-      (goto-char (point-min))
-      (outshine-cycle nil))))
+      (save-excursion
+        (goto-char (point-min))
+        (outshine-cycle nil))))
 
    (t
     (cond
@@ -2034,7 +2027,6 @@ Essentially a much simplified version of `next-line'."
             (message "CHILDREN"))
           (setq
            this-command 'outshine-cycle-children))
-           ;; outshine-current-buffer-visibility-state 'children))
          ((eq last-command 'outshine-cycle-children)
           ;; We just showed the children, now show everything.
           (show-subtree)
@@ -2189,11 +2181,10 @@ Essentially a much simplified version of `next-line'."
 
 (defun outshine-insert-comment-subtree (&optional arg)
   "Insert new subtree that is tagged as comment."
-    (interactive "P")
-    (outshine-insert-heading)
-    (save-excursion
-      (insert
-       (concat "  :" outshine-comment-tag ":"))))
+  (interactive "P")
+  (outshine-insert-heading)
+  (save-excursion
+    (insert (concat "  :" outshine-comment-tag ":"))))
 
 (defun outshine-toggle-subtree-comment-status (&optional arg)
   "Tag (or untag) subtree at point with `outshine-comment-tag'.
@@ -2229,12 +2220,12 @@ heading."
             (concat
              (regexp-quote outshine-normalized-comment-end) " *")))
       (goto-char (match-beginning 0))
-       (if (looking-back " ")
-           (insert (concat comtag " "))
-         (insert (concat " " comtag))))
+      (if (looking-back " ")
+          (insert (concat comtag " "))
+        (insert (concat " " comtag))))
      (t (if (looking-back " ")
-          (insert comtag)
-         (insert (concat " " comtag)))))))
+            (insert comtag)
+          (insert (concat " " comtag)))))))
 
 ;; Cycle comment subtrees anyway
 (defun outshine-force-cycle-comment ()
@@ -2407,7 +2398,7 @@ This function takes `comment-end' into account."
 ;;;;; iMenu and idoMenu Support
 
 (defun outshine-imenu-with-navi-regexp
-  (kbd-key &optional PREFER-IMENU-P LAST-PARENTH-EXPR-P)
+    (kbd-key &optional PREFER-IMENU-P LAST-PARENTH-EXPR-P)
   "Enhanced iMenu/idoMenu support depending on `navi-mode'.
 
 KBD-KEY is a single character keyboard-key defined as a
@@ -3761,33 +3752,33 @@ marking subtree (and subsequently run the tex command)."
 
 (easy-menu-define outshine-menu outshine-mode-map "Outshine menu"
   '("Outshine"
-     ["Cycle Subtree" outshine-cycle
-      :active (outline-on-heading-p) :keys "<tab>"]
-     ["Cycle Buffer" outshine-cycle-buffer t :keys "<backtab>"]
-     ["Show More" outshine-show-more
-      :active (outline-on-heading-p) :keys "M-<right>"]
-     ["Hide More" outshine-hide-more
-      :active (outline-on-heading-p) :keys "M-<left>"]
-     ["Show All" show-all t :keys "M-# M-a>"]
-     "--"
-     ["Insert Heading" outshine-insert-heading t :keys "M-<return>"]
-     ["Promote Heading" outline-promote
-      :active (outline-on-heading-p) :keys "M-S-<left>"]
-     ["Demote Heading" outline-demote
-      :active (outline-on-heading-p) :keys "M-S-<right>"]
-     ["Move Heading Up" outline-move-heading-up
-      :active (outline-on-heading-p) :keys "M-S-<up>"]
-     ["Move Heading Down" outline-move-heading-down
-      :active (outline-on-heading-p) :keys "M-S-<down>"]
+    ["Cycle Subtree" outshine-cycle
+     :active (outline-on-heading-p) :keys "<tab>"]
+    ["Cycle Buffer" outshine-cycle-buffer t :keys "<backtab>"]
+    ["Show More" outshine-show-more
+     :active (outline-on-heading-p) :keys "M-<right>"]
+    ["Hide More" outshine-hide-more
+     :active (outline-on-heading-p) :keys "M-<left>"]
+    ["Show All" show-all t :keys "M-# M-a>"]
     "--"
-     ["Previous Visible Heading" outline-previous-visible-heading
-      t :keys "M-<up>"]
-     ["Next Visible Heading" outline-next-visible-heading
-      t :keys "M-<down>"]
-     ["Up Heading" outline-up-heading t]
+    ["Insert Heading" outshine-insert-heading t :keys "M-<return>"]
+    ["Promote Heading" outline-promote
+     :active (outline-on-heading-p) :keys "M-S-<left>"]
+    ["Demote Heading" outline-demote
+     :active (outline-on-heading-p) :keys "M-S-<right>"]
+    ["Move Heading Up" outline-move-heading-up
+     :active (outline-on-heading-p) :keys "M-S-<up>"]
+    ["Move Heading Down" outline-move-heading-down
+     :active (outline-on-heading-p) :keys "M-S-<down>"]
     "--"
-     ["Mark Subtree" outline-mark-subtree t]
-     ["Edit As Org" outorg-edit-as-org t]))
+    ["Previous Visible Heading" outline-previous-visible-heading
+     t :keys "M-<up>"]
+    ["Next Visible Heading" outline-next-visible-heading
+     t :keys "M-<down>"]
+    ["Up Heading" outline-up-heading t]
+    "--"
+    ["Mark Subtree" outline-mark-subtree t]
+    ["Edit As Org" outorg-edit-as-org t]))
 
 ;; add "Outshine" menu item
 
