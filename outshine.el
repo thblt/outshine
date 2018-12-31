@@ -1,5 +1,7 @@
 ;;; outshine.el --- outline with outshine outshines outline
 
+;; FIXME: Enable and test with lexical-binding.
+
 ;; Maintainer: Adam Porter <adam@alphapapa.net>
 ;; Version: 3.0
 ;; URL: http://github.com/alphapapa/outshine
@@ -21,7 +23,7 @@
 ;;   :git-clone: git://github.com/alphapapa/outshine.git
 ;;   :END:
 
-;;;; Commentary
+;;; Commentary:
 
 ;;;;; About outshine
 
@@ -247,19 +249,21 @@
 ;; | <2013-05-03 Fr> | Thorsten Jolitz        |     1.0 |
 ;; | <2013-02-20 Mi> | Thorsten Jolitz        |     0.9 |
 
-;;; Requires
+;;; Code:
+
+;;;; Requirements
 
 (eval-when-compile
+  ;; FIXME: Remove
   (require 'cl))
 (require 'outline)
 (require 'outorg)
 (require 'outshine-org-cmds)
-;; necessary before Emacs 24.3
+;; necessary before Emacs 24.3  FIXME: Remove
 (require 'newcomment)
-;; (require 'easymenu)
 (require 'cl-lib)
 
-;;; Declarations
+;;;; Declarations
 
 (declare-function outorg-edit-as-org "outorg")
 (declare-function outorg-copy-edits-and-exit "outorg")
@@ -270,8 +274,9 @@
 (declare-function imenu-choose-buffer-index "imenu")
 (declare-function org-agenda-remove-restriction-lock "org-agenda")
 
-;;; Variables
-;;;; Consts
+;;;; Variables
+
+;;;; Constants
 
 (defconst outshine-max-level 8
   "Maximal level of headlines recognized.")
@@ -284,16 +289,13 @@
 
 (defconst outshine-protected-variables
   '(outline-regexp outline-level outline-heading-end-regexp)
-  "A list of variables to save when activating
-`outshine-mode' and restore afterwards.
+  "Variables to save and restore around `outshine-mode'.
+Please report a bug if this needs to be changed.")
 
-Don't touch this: if a variable is missing from this list, report
-a bug or send a PR." )
-
-;; was "[;]+"
 (defconst outshine-oldschool-elisp-outline-regexp-base
   (format "[;]\\{1,%d\\}" outshine-max-level)
-  "Oldschool Emacs Lisp base for calculating the outline-regexp")
+  ;; FIXME: Remove if possible.
+  "Oldschool Emacs Lisp base for calculating `outline-regexp'.")
 
 (defconst outshine-speed-commands-default
   '(
@@ -423,17 +425,15 @@ a bug or send a PR." )
     ;; [X]
     ("?" . outshine-speed-command-help)
     )
-  "The default speed commands.")
-
+  "Default speed commands.")
 
 (defconst outshine-comment-tag "comment"
-  "The tag that marks a subtree as comment.
-A comment subtree does not open during visibility cycling.")
+  "Tag that marks subtrees as commented.
+Commented subtrees do not open during visibility cycling.")
 
 (defconst outshine-latex-documentclass-regexp
   "^[[:space:]]*\\\\documentclass\\(?:\\[.+]\\)?{\\(.+\\)}"
-  "Regexp matching the document class in a latex doc (in submatch
-  1)")
+  "Regexp matching the document class in a LaTeX doc.")
 
 ;;;; Vars
 
