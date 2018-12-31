@@ -1382,21 +1382,20 @@ COMMANDS is a list of alternating OLDDEF NEWDEF command names."
 (defun outshine-hide-comment-subtrees ()
   "Re-hide all comment subtrees after a visibility state change."
   (let ((state outshine-current-buffer-visibility-state))
-  (when (and (not outshine-open-comment-trees)
-             (not (memq state '(overview folded))))
-    (save-excursion
-      (let* ((globalp (memq state '(contents all)))
-             (beg (if globalp (point-min) (point)))
-             (end (if globalp (point-max)
-                    (outline-end-of-subtree))))
-        (outshine-hide-comment-subtrees-in-region beg end)
-        (goto-char beg)
-        (if (looking-at (concat ".*:" outshine-comment-tag ":"))
-            (message "%s" (substitute-command-keys
-                           "Subtree is tagged as comment and
-                           stays closed. Use
-                           \\[outshine-force-cycle-comment] to
-                           cycle it anyway."))))))))
+    (when (and (not outshine-open-comment-trees)
+               (not (memq state '(overview folded))))
+      (save-excursion
+        (let* ((globalp (memq state '(contents all)))
+               (beg (if globalp
+                        (point-min)
+                      (point)))
+               (end (if globalp
+                        (point-max)
+                      (outline-end-of-subtree))))
+          (outshine-hide-comment-subtrees-in-region beg end)
+          (goto-char beg)
+          (when (looking-at (concat ".*:" outshine-comment-tag ":"))
+            (message "%s" (substitute-command-keys "Subtree is tagged as comment and stays closed.  Use \\[outshine-force-cycle-comment] to cycle anyway."))))))))
 
 ;; ;; FIXME max-lisp-eval-depth exceeded error when turned on
 ;; ;; with max-lisp-eval-depth set to 600
