@@ -531,33 +531,46 @@ XEmacs and Emacs 21 do not know about the `min-colors' attribute.
 For them we convert a (min-colors 8) entry to a `tty' entry and move it
 to the top of the list.  The `min-colors' attribute will be removed from
 any other entries, and any resulting duplicates will be removed entirely."
-  (when (and inherits (facep inherits) (not specs))
+  (when (and inherits
+             (facep inherits)
+             (not specs))
     (setq specs (or specs
                     (get inherits 'saved-face)
                     (get inherits 'face-defface-spec))))
-  (cond   ((and inherits (facep inherits)
-         (not (featurep 'xemacs))
-         (>= emacs-major-version 22)
-         ;; do not inherit outline faces before Emacs 23
-         (or (>= emacs-major-version 23)
-             (not (string-match "\\`outline-[0-9]+"
-                                (symbol-name inherits)))))
-    (list (list t :inherit inherits)))
-   ((or (featurep 'xemacs) (< emacs-major-version 22))
-    ;; These do not understand the `min-colors' attribute.
-    (let (r e a)
-      (while (setq e (pop specs))
-        (cond
-         ((memq (car e) '(t default)) (push e r))
-         ((setq a (member '(min-colors 8) (car e)))
-          (nconc r (list (cons (cons '(type tty) (delq (car a) (car e)))
-                               (cdr e)))))
-         ((setq a (assq 'min-colors (car e)))
-          (setq e (cons (delq a (car e)) (cdr e)))
-          (or (assoc (car e) r) (push e r)))
-         (t (or (assoc (car e) r) (push e r)))))
-      (nreverse r)))
-   (t specs)))
+  (cond ((and inherits
+              (facep inherits)
+              (not (featurep 'xemacs))
+              ;; FIXME: Remove version checks, or move elsewhere.
+              (>= emacs-major-version 22)
+              ;; do not inherit outline faces before Emacs 23
+              (or (>= emacs-major-version 23)
+                  (not (string-match "\\`outline-[0-9]+"
+                                     (symbol-name inherits)))))
+         (list (list t :inherit inherits)))
+
+        ((or (featurep 'xemacs)
+             (< emacs-major-version 22))
+         ;; These do not understand the `min-colors' attribute.
+         ;; FIXME: Rename variables meaningfully.
+         ;; FIXME: Convert to `cl-loop'.
+         (let (r e a)
+           (while (setq e (pop specs))
+             (cond ((memq (car e) '(t default))
+                    (push e r))
+                   ((setq a (member '(min-colors 8) (car e)))
+                    (nconc r (list (cons (cons '(type tty)
+                                               (delq (car a) (car e)))
+                                         (cdr e)))))
+                   ((setq a (assq 'min-colors (car e)))
+                    (setq e (cons (delq a (car e))
+                                  (cdr e)))
+                    (unless (assoc (car e) r)
+                      (push e r)))
+                   (t (when (assoc (car e) r)
+                        (push e r)))))
+           (nreverse r)))
+
+        (t specs)))
 (put 'outshine-compatible-face 'lisp-indent-function 1)
 
 ;; The following face definitions are from `org-faces.el'
