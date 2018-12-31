@@ -1063,26 +1063,18 @@ Based on `comment-start' and `comment-add'."
    (t (error "No valid comment-padding"))))
 
 (defun outshine-calc-outline-regexp ()
-  "Calculate the outline regexp for the current mode."
-  (concat
-   (and outshine-regexp-outcommented-p
-         ;; regexp-base outcommented, but no 'comment-start' defined
-         (or comment-start
-             (message (concat
-                       "Cannot calculate outcommented outline-regexp\n"
-                       "without 'comment-start' character defined!")))
-         (concat
-          ;; comment-start
-          ;; (outshine-calc-comment-region-starter)
-          (regexp-quote
-           (outshine-calc-comment-region-starter))
-          ;; comment-padding
-          (if outshine-enforce-no-comment-padding-p
-              ""
-            (outshine-calc-comment-padding))))
-   ;; regexp-base
-   outshine-normalized-outline-regexp-base
-   " "))
+  ;; FIXME: Rename function.
+  "Return the outline regexp for the current mode."
+  (concat (when (and outshine-regexp-outcommented-p
+                     (or comment-start
+                         ;; MAYBE: Should this be `warn'?
+                         (message (concat "Cannot calculate outcommented outline-regexp without `comment-start' character defined"))))
+            (concat (regexp-quote (outshine-calc-comment-region-starter))
+                    (if outshine-enforce-no-comment-padding-p
+                        ""
+                      (outshine-calc-comment-padding))))
+          outshine-normalized-outline-regexp-base
+          " "))
 
 ;; TODO how is this called (match-data?) 'looking-at' necessary?
 (defun outshine-calc-outline-level ()
