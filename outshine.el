@@ -273,7 +273,7 @@
 ;;; Variables
 ;;;; Consts
 
-(defconst outshine-version "2.0"
+(defconst outshine-version "3.0"
   "outshine version number.")
 
 (defconst outshine-max-level 8
@@ -1650,7 +1650,7 @@ This function will be hooked to `outline-minor-mode'."
              (not outline-minor-mode))
     (outshine-mode 0)))
 
- 
+�
 ;;;;; Additional outline functions
 ;;;;;; Functions from `outline-magic'
 
