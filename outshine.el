@@ -273,9 +273,6 @@
 ;;; Variables
 ;;;; Consts
 
-(defconst outshine-version "3.0"
-  "outshine version number.")
-
 (defconst outshine-max-level 8
   "Maximal level of headlines recognized.")
 
