@@ -1692,7 +1692,7 @@ If yes, return this character."
 ;;;;;; Commands from `outline-magic'
 
 (defun outshine-next-line ()
-  "Forward line, but mover over invisible line ends.
+  "Forward line, but move over invisible line ends.
 Essentially a much simplified version of `next-line'."
   (interactive)
   (beginning-of-line 2)
