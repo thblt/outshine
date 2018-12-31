@@ -274,8 +274,6 @@
 (declare-function imenu-choose-buffer-index "imenu")
 (declare-function org-agenda-remove-restriction-lock "org-agenda")
 
-;;;; Variables
-
 ;;;; Constants
 
 (defconst outshine-max-level 8
@@ -435,7 +433,7 @@ Commented subtrees do not open during visibility cycling.")
   "^[[:space:]]*\\\\documentclass\\(?:\\[.+]\\)?{\\(.+\\)}"
   "Regexp matching the document class in a LaTeX doc.")
 
-;;;; Vars
+;;;; Variables
 
 (defvar outshine-mode-map
   (make-sparse-keymap)
@@ -517,8 +515,15 @@ them set by set, separated by a nil element.  See the example for
 
 ;;;; Faces
 
+(defgroup outshine-faces nil
+  "Faces in Outshine."
+  :tag "Outshine Faces"
+  :group 'outshine
+  :group 'faces)
+
 ;; from `org-compat.el'
 (defun outshine-compatible-face (inherits specs)
+  ;; FIXME: Remove this function.  Shouldn't be necessary anymore.
   "Make a compatible face specification.
 If INHERITS is an existing face and if the Emacs version supports it,
 just inherit the face.  If INHERITS is set and the Emacs version does
@@ -683,21 +688,19 @@ any other entries, and any resulting duplicates will be removed entirely."
   "Face used for level 8 headlines."
   :group 'outshine-faces)
 
-;;;; Customs
+;;;; Customization
+
 ;;;;; Custom Groups
 
 (defgroup outshine nil
   "Enhanced library for outline navigation in source code buffers."
   :prefix "outshine-"
+  ;; MAYBE: Change parent group.
   :group 'lisp)
 
-(defgroup outshine-faces nil
-  "Faces in Outshine."
-  :tag "Outshine Faces"
-  :group 'outshine)
-
-
 ;;;;; Custom Vars
+
+;; FIXME: Remove unnecessary `:group' from customs.
 
 (defcustom outshine-imenu-show-headlines-p t
   "Non-nil means use calculated outline-regexp for imenu."
@@ -797,11 +800,11 @@ t      Everywhere except in headlines"
 
 ;; old regexp: "[*]+"
 (defvar outshine-default-outline-regexp-base
+  ;; MAYBE: Define this with a custom setter.
   (format "[%s]\\{1,%d\\}"
           outshine-regexp-base-char outshine-max-level)
   "Default base for calculating the outline-regexp")
 
-;; TODO delete this line  "\\(\\[\\)\\([[:digit:]+]\\)\\( L\\]\\)"
 (defvar outshine-hidden-lines-cookie-format-regexp
   (concat
    "\\( "
@@ -861,9 +864,8 @@ commands in the Help buffer using the `?' speed command."
                          (list :tag "Descriptive Headline" (string :tag "Headline"))
                          (cons :tag "Letter and Command"
                                (string :tag "Command letter")
-                               (choice
-                                (function)
-                                (sexp))))))
+                               (choice (function)
+                                       (sexp))))))
 
 (defcustom outshine-speed-command-hook
   '(outshine-speed-command-activate)
@@ -938,8 +940,112 @@ significant."
   :group 'outshine
   :type 'boolean)
 
-;;; Defuns
-;;;; Advices
+;;;; Minor mode
+
+;;;###autoload
+(define-minor-mode outshine-mode
+  "Outshine brings the look&feel of Org-mode to the (GNU Emacs)
+world outside of the Org major-mode."
+  :init-value nil
+  :lighter "Outshine"
+  (if outshine-mode
+      (outshine--minor-mode-activate)
+    (outshine--minor-mode-deactivate)))
+
+(defun outshine--minor-mode-activate ()
+  "Activate Outshine.
+
+Don't use this function, the public interface is
+`outshine-mode'."
+
+  ;; Ensure outline is on
+  (unless outline-minor-mode
+    (outline-minor-mode 1))
+
+  ;; Save variables
+  (setq outshine-protected-variables-values (mapcar 'symbol-value outshine-protected-variables))
+
+  ;; Install deactivation hook
+  (add-hook 'outline-minor-mode-hook 'outshine--outline-minor-mode-hook)
+
+  ;; Advise org-store-log-note
+  (defadvice org-store-log-note (around org-store-log-note-around activate)
+    "Outcomment inserted log-note in Outshine buffers."
+    (when outshine-mode
+      (let ((outshine-log-note-beg-marker
+	     ;; stay before inserted text
+	     (copy-marker (outshine-mimic-org-log-note-marker) nil))
+	    (outshine-log-note-end-marker
+	     ;; stay after inserted text
+	     (copy-marker (outshine-mimic-org-log-note-marker) t)))
+        ad-do-it
+        (unless (derived-mode-p 'org-mode 'org-agenda-mode)
+          (outshine-comment-region outshine-log-note-beg-marker
+		                   outshine-log-note-end-marker))
+        (move-marker outshine-log-note-beg-marker nil)
+        (move-marker outshine-log-note-end-marker nil))))
+
+  ;; Compute basic outline regular expressions
+  (outshine-set-outline-regexp-base)
+  (outshine-normalize-regexps)
+
+  (let ((out-regexp (outshine-calc-outline-regexp)))
+    (outshine-set-local-outline-regexp-and-level
+     out-regexp
+     'outshine-calc-outline-level
+     outline-heading-end-regexp)
+    (setq outshine-promotion-headings
+          (outshine-make-promotion-headings-list 8))
+    ;; imenu preparation
+    (and outshine-imenu-show-headlines-p
+         (set (make-local-variable
+               'outshine-imenu-preliminary-generic-expression)
+              `((nil ,(concat out-regexp "\\(.*$\\)") 1)))
+	 (if imenu-generic-expression
+	     (add-to-list 'imenu-generic-expression
+                          (car outshine-imenu-preliminary-generic-expression))
+           (setq imenu-generic-expression
+                 outshine-imenu-preliminary-generic-expression)))
+    (when outshine-startup-folded-p
+      (condition-case error-data
+          (outline-hide-sublevels 1)
+        ('error (message "No outline structure detected"))))
+    (when (pcase outshine-fontify
+            (`t t)
+            (`nil nil)
+            ((pred functionp) (funcall outshine-fontify))
+            (_ (user-error "Invalid value for variable `outshine-fontify'")))
+      (outshine-fontify-headlines out-regexp))))
+
+(defun outshine--minor-mode-deactivate ()
+  "Deactivate Outshine.
+
+Don't use this function, the public interface is
+`outshine-mode'."
+  ;; Restore variables
+  (cl-mapc 'set outshine-protected-variables outshine-protected-variables-values)
+
+  ;; Show everything
+  (outline-show-all)
+
+  ;; Deactivate font-lock
+  (outshine-unfontify))
+
+;;;###autoload
+(defun outshine-hook-function ()
+  "DEPRECATED, use `outshine-mode'."
+  (warn "`outshine-hook-function' has been deprecated, use `outshine-mode'")
+  (outshine-mode 1))
+
+(defun outshine--outline-minor-mode-hook ()
+  "Deactivate `outshine-mode' if `outshine-mode' but not `outline-minor-mode'.
+
+This function will be hooked to `outline-minor-mode'."
+  (when (and outshine-mode
+             (not outline-minor-mode))
+    (outshine-mode 0)))
+
+;;;; Functions
 
 (defun outshine-mimic-org-log-note-marker ()
   (if (version< (org-version) "8.3")
@@ -949,7 +1055,6 @@ significant."
       (goto-char org-log-note-marker)
       (copy-marker (org-log-beginning)))))
 
-;;;; Functions
 ;;;;; Define keys with fallback
 
 ;; copied and adapted from Alexander Vorobiev
@@ -1540,114 +1645,11 @@ function was called upon."
     (call-interactively fun))
   (outorg-copy-edits-and-exit))
 
-;;;;; Minor mode
-
-;;;###autoload
-(define-minor-mode outshine-mode
-  "Outshine brings the look&feel of Org-mode to the (GNU Emacs)
-world outside of the Org major-mode."
-  :init-value nil
-  :lighter "Outshine"
-  (if outshine-mode
-      (outshine--minor-mode-activate)
-    (outshine--minor-mode-deactivate)))
-
-(defun outshine--minor-mode-activate ()
-  "Activate Outshine.
-
-Don't use this function, the public interface is
-`outshine-mode'."
-
-  ;; Ensure outline is on
-  (unless outline-minor-mode
-    (outline-minor-mode 1))
-
-  ;; Save variables
-  (setq outshine-protected-variables-values (mapcar 'symbol-value outshine-protected-variables))
-
-  ;; Install deactivation hook
-  (add-hook 'outline-minor-mode-hook 'outshine--outline-minor-mode-hook)
-
-  ;; Advise org-store-log-note
-  (defadvice org-store-log-note (around org-store-log-note-around activate)
-    "Outcomment inserted log-note in Outshine buffers."
-    (when outshine-mode
-      (let ((outshine-log-note-beg-marker
-	     ;; stay before inserted text
-	     (copy-marker (outshine-mimic-org-log-note-marker) nil))
-	    (outshine-log-note-end-marker
-	     ;; stay after inserted text
-	     (copy-marker (outshine-mimic-org-log-note-marker) t)))
-        ad-do-it
-        (unless (derived-mode-p 'org-mode 'org-agenda-mode)
-          (outshine-comment-region outshine-log-note-beg-marker
-		                   outshine-log-note-end-marker))
-        (move-marker outshine-log-note-beg-marker nil)
-        (move-marker outshine-log-note-end-marker nil))))
-
-  ;; Compute basic outline regular expressions
-  (outshine-set-outline-regexp-base)
-  (outshine-normalize-regexps)
-
-  (let ((out-regexp (outshine-calc-outline-regexp)))
-    (outshine-set-local-outline-regexp-and-level
-     out-regexp
-     'outshine-calc-outline-level
-     outline-heading-end-regexp)
-    (setq outshine-promotion-headings
-          (outshine-make-promotion-headings-list 8))
-    ;; imenu preparation
-    (and outshine-imenu-show-headlines-p
-         (set (make-local-variable
-               'outshine-imenu-preliminary-generic-expression)
-              `((nil ,(concat out-regexp "\\(.*$\\)") 1)))
-	 (if imenu-generic-expression
-	     (add-to-list 'imenu-generic-expression
-                          (car outshine-imenu-preliminary-generic-expression))
-           (setq imenu-generic-expression
-                 outshine-imenu-preliminary-generic-expression)))
-    (when outshine-startup-folded-p
-      (condition-case error-data
-          (outline-hide-sublevels 1)
-        ('error (message "No outline structure detected"))))
-    (when (pcase outshine-fontify
-            (`t t)
-            (`nil nil)
-            ((pred functionp) (funcall outshine-fontify))
-            (_ (user-error "Invalid value for variable `outshine-fontify'")))
-      (outshine-fontify-headlines out-regexp))))
-
-(defun outshine--minor-mode-deactivate ()
-  "Deactivate Outshine.
-
-Don't use this function, the public interface is
-`outshine-mode'."
-  ;; Restore variables
-  (cl-mapc 'set outshine-protected-variables outshine-protected-variables-values)
-
-  ;; Show everything
-  (outline-show-all)
-
-  ;; Deactivate font-lock
-  (outshine-unfontify))
-
-;;;###autoload
-(defun outshine-hook-function ()
-  "DEPRECATED, use `outshine-mode'."
-  (warn "`outshine-hook-function' has been deprecated, use `outshine-mode'")
-  (outshine-mode 1))
-
-(defun outshine--outline-minor-mode-hook ()
-  "Deactivate `outshine-mode' if `outshine-mode' but not `outline-minor-mode'.
-
-This function will be hooked to `outline-minor-mode'."
-  (when (and outshine-mode
-             (not outline-minor-mode))
-    (outshine-mode 0)))
-
-�
 ;;;;; Additional outline functions
+
 ;;;;;; Functions from `outline-magic'
+
+;; FIXME: Use Org or outline- replacements for as many of these as possible.
 
 (defun outshine-cycle-emulate-tab ()
   "Check if TAB should be emulated at the current position."
@@ -3721,7 +3723,7 @@ marking subtree (and subsequently run the tex command)."
 ;; ;; <remap> <transpose-words>	org-transpose-words
 
 
-;;; Menus and Keybindings
+;;;; Menus and Keybindings
 
 ;; FIXME
 ;; From: Stefan Monnier <monnier@iro.umontreal.ca>
@@ -3849,6 +3851,8 @@ marking subtree (and subsequently run the tex command)."
 (define-key outshine-mode-map [M-down] 'outline-next-visible-heading)
 
 ;;;;; Other Keybindings
+
+;; FIXME: Remove commented code, or move to separate file or documentation.
 
 ;; ;;;;;; [Prefix]
 
@@ -4283,7 +4287,7 @@ marking subtree (and subsequently run the tex command)."
 ;; ;; C-c C-x <left>	org-shiftcontrolleft
 ;; ;; C-c C-x <right>      org-shiftcontrolright
 
-;;; outshine.el ends soon
+;;;; Footer
 
 (provide 'outshine)
 
