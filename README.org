@@ -138,21 +138,21 @@ To get started, simply start Outshine with `M-x outshine-mode RET'
 Add this to your init file if you always want outshine for emacs-lisp
 buffers (recommended):
 
-: #+begin_src emacs-lisp
-:   (add-hook 'emacs-lisp-mode-hook 'outshine-mode)
-: #+end_src
+#+begin_src emacs-lisp
+  (add-hook 'emacs-lisp-mode-hook 'outshine-mode)
+#+end_src
 
 It makes sense to add 'outline-minor-mode' to the hooks of other
 major-modes too, e.g.
 
-: #+begin_src emacs-lisp
-:  (add-hook 'LaTeX-mode-hook 'outshine-mode)
-:  (add-hook 'picolisp-mode-hook 'outshine-mode)
-:  (add-hook 'clojure-mode-hook 'outshine-mode)
-:  (add-hook 'ess-mode-hook 'outshine-mode)
-:  (add-hook 'ledger-mode-hook 'outshine-mode)
-:  (add-hook 'message-mode-hook 'outshine-mode)
-: #+end_src
+#+begin_src emacs-lisp
+ (add-hook 'LaTeX-mode-hook 'outshine-mode)
+ (add-hook 'picolisp-mode-hook 'outshine-mode)
+ (add-hook 'clojure-mode-hook 'outshine-mode)
+ (add-hook 'ess-mode-hook 'outshine-mode)
+ (add-hook 'ledger-mode-hook 'outshine-mode)
+ (add-hook 'message-mode-hook 'outshine-mode)
+#+end_src
 
 or whatever your favorite Emacs modes are. Then you can structure and
 handle all your source-files just like Org files, allowing for a
@@ -164,9 +164,9 @@ out-of-the-box. You need to set the outshine prefix (M-#) in your init
 file before (!) outline-mode is loaded to enable the outshine
 keybindings:
 
-: #+begin_src emacs-lisp
-:  (defvar outline-minor-mode-prefix "\M-#")
-: #+end_src
+#+begin_src emacs-lisp
+ (defvar outline-minor-mode-prefix "\M-#")
+#+end_src
 
 *** Usage
 
@@ -194,9 +194,9 @@ describes what they do:
 
 To activate speed-keys, put this in your init-file:
 
-: #+BEGIN_SRC emacs-lisp
-:  (setq outshine-use-speed-commands t)
-: #+END_SRC
+#+BEGIN_SRC emacs-lisp
+ (setq outshine-use-speed-commands t)
+#+END_SRC
 
 Call `outshine-speed-command-help' to get an overview over the
 available functionality and the keybindings.
