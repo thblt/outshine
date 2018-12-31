@@ -989,6 +989,7 @@ recover it by stripping off \"-map\" from KEYMAP name."
            (condition-case nil
                (call-interactively original-func)
              (error nil)))))))
+(put 'outshine-define-key-with-fallback 'lisp-indent-function 2)
 
 ;;;;; Normalize regexps
 
@@ -3788,75 +3789,64 @@ marking subtree (and subsequently run the tex command)."
 (define-key outshine-mode-map [menu-bar outline] 'undefined)
 
 ;;;; Keybindings
+
 ;;;;; Principal Keybindings
 
-;; from
-;; http://stackoverflow.com/questions/4351044/binding-m-up-m-down-in-emacs-23-1-1
+;; From <http://stackoverflow.com/questions/4351044/binding-m-up-m-down-in-emacs-23-1-1>.
+;; FIXME: This should almost certainly be removed, or at least moved into the mode.
 (define-key input-decode-map "\e\eOA" [(meta up)])
 (define-key input-decode-map "\e\eOB" [(meta down)])
 
-;;  Adapted from `org-mode' and `outline-mode-easy-bindings'
-;; Visibility Cycling
-;; (outshine-define-key-with-fallback
-;;  outshine-mode-map (kbd "<tab>")
-;;  (outshine-cycle arg) (outline-on-heading-p))
+;; Adapted from `org-mode' and `outline-mode-easy-bindings'.
 
-;; (outshine-define-key-with-fallback
-;;  outshine-mode-map (kbd "TAB")
-;;  (outshine-cycle arg) (outline-on-heading-p))
+;;;;;; Visibility Cycling
 
 (outshine-define-key-with-fallback
- outshine-mode-map (kbd "TAB")
- (outshine-cycle arg)
- (or
-  (and
-   (bobp)
-   (not (outline-on-heading-p))
-   outshine-org-style-global-cycling-at-bob-p)
-  (outline-on-heading-p)))
+    outshine-mode-map (kbd "TAB")
+  (outshine-cycle arg)
+  (or (and (bobp) (not (outline-on-heading-p))
+           outshine-org-style-global-cycling-at-bob-p)
+      (outline-on-heading-p)))
 
-;; works on the console too
-(define-key
-  outshine-mode-map (kbd "M-TAB") 'outshine-cycle-buffer)
-;; outshine-mode-map (kbd "<backtab>") 'outshine-cycle-buffer)
-;; outshine-mode-map (kbd "BACKTAB") 'outshine-cycle-buffer)
+;; Works on the console too.
+(define-key outshine-mode-map (kbd "M-TAB") 'outshine-cycle-buffer)
+
 (outshine-define-key-with-fallback
- outshine-mode-map (kbd "M-<left>")
- (outshine-hide-more) (outline-on-heading-p))
+    outshine-mode-map (kbd "M-<left>")
+  (outshine-hide-more) (outline-on-heading-p))
+
 (outshine-define-key-with-fallback
- outshine-mode-map (kbd "M-<right>")
- (outshine-show-more) (outline-on-heading-p))
-;; Headline Insertion
+    outshine-mode-map (kbd "M-<right>")
+  (outshine-show-more) (outline-on-heading-p))
+
+;;;;;; Headline Insertion
+
 (outshine-define-key-with-fallback
- ;; outshine-mode-map (kbd "M-<return>")
- outshine-mode-map (kbd "M-RET")
- (outshine-insert-heading) (outline-on-heading-p))
-;; Structure Editing
+    outshine-mode-map (kbd "M-RET")
+  (outshine-insert-heading) (outline-on-heading-p))
+
+;;;;;; Structure Editing
+
 (outshine-define-key-with-fallback
- outshine-mode-map (kbd "M-S-<left>")
- (outline-promote) (outline-on-heading-p))
+    outshine-mode-map (kbd "M-S-<left>")
+  (outline-promote) (outline-on-heading-p))
+
 (outshine-define-key-with-fallback
- outshine-mode-map (kbd "M-S-<right>")
- (outline-demote) (outline-on-heading-p))
+    outshine-mode-map (kbd "M-S-<right>")
+  (outline-demote) (outline-on-heading-p))
+
 (outshine-define-key-with-fallback
- outshine-mode-map (kbd "M-S-<up>")
- (outline-move-subtree-up) (outline-on-heading-p))
+    outshine-mode-map (kbd "M-S-<up>")
+  (outline-move-subtree-up) (outline-on-heading-p))
+
 (outshine-define-key-with-fallback
- outshine-mode-map (kbd "M-S-<down>")
- (outline-move-subtree-down) (outline-on-heading-p))
-;; Motion
-(define-key
-  ;; outshine-mode-map [(meta up)]
-  outshine-mode-map [M-up]
-  ;; outshine-mode-map (kbd "M-<up>")
-  ;; outshine-mode-map (kbd "<M-up>")
-  'outline-previous-visible-heading)
-(define-key
-  ;; outshine-mode-map [(meta down)]
-  outshine-mode-map [M-down]
-  ;; outshine-mode-map (kbd "M-<down>")
-  ;; outshine-mode-map (kbd "<M-down>")
-  'outline-next-visible-heading)
+    outshine-mode-map (kbd "M-S-<down>")
+  (outline-move-subtree-down) (outline-on-heading-p))
+
+;;;;;; Motion
+
+(define-key outshine-mode-map [M-up] 'outline-previous-visible-heading)
+(define-key outshine-mode-map [M-down] 'outline-next-visible-heading)
 
 ;;;;; Other Keybindings
 
