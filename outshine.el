@@ -1305,67 +1305,6 @@ COMMANDS is a list of alternating OLDDEF NEWDEF command names."
 ;;        'outshine-hide-comment-subtrees)
 
 
-;;;;; Use outorg functions
-
-;; (defun outshine-pt-rgxps ()
-;;   "Return list with 5 regexps, like (rgx0 rgx1 rgx2 rgx3 rgx4).
-
-;; These regexps, if non-nil, match
-;;  - rgx0 :: buffer-substring from bol to point
-;;  - rgx1 :: buffer-substring from bol of previous line to point
-;;  - rgx2 :: buffer-substring from bol of second previous line to point
-;;  - rgx3 :: buffer-substring from bol of third previous line to point
-;;  - rgx4 :: buffer-substring from bol of fourth previous line to point"
-;;   (let ((cur-buf (current-buffer))
-;;         (buf-mode major-mode)
-;;         beg end rgx0 rgx1 rgx2 rgx3 rgx4)
-;;     (save-excursion
-;;       (save-restriction
-;;         (widen)
-;;         (setq end (point))
-;;         (save-excursion
-;;           (setq beg (outline-previous-heading)))
-;;         (with-temp-buffer
-;;           (insert-buffer-substring-no-properties
-;;            cur-buf beg end)
-;;           (funcall `,buf-mode)
-;;           (save-excursion
-;;             (uncomment-region (point-min) (point-max)))
-;;           (let ((pt (1- (point-max))))
-;;             (setq rgx0
-;;                   (regexp-opt
-;;                    (list
-;;                     (buffer-substring-no-properties
-;;                      (point-at-bol) pt))))
-;;             (when (= (save-excursion (forward-line -1)) 0)
-;;               (setq rgx1
-;;                     (regexp-opt
-;;                      (list
-;;                       (buffer-substring-no-properties
-;;                        (save-excursion (forward-line -1) (point))
-;;                        pt)))))
-;;             (when (= (save-excursion (forward-line -2)) 0)
-;;               (setq rgx2
-;;                     (regexp-opt
-;;                      (list
-;;                       (buffer-substring-no-properties
-;;                        (save-excursion (forward-line -2) (point))
-;;                        pt)))))
-;;             (when (= (save-excursion (forward-line -3)) 0)
-;;               (setq rgx3
-;;                     (regexp-opt
-;;                      (list
-;;                       (buffer-substring-no-properties
-;;                        (save-excursion (forward-line -3) (point))
-;;                        pt)))))
-;;             (when (= (save-excursion (forward-line -4)) 0)
-;;               (setq rgx4
-;;                     (regexp-opt
-;;                      (list
-;;                       (buffer-substring-no-properties
-;;                        (save-excursion (forward-line -4) (point))
-;;                        pt)))))))
-;;         (list rgx4 rgx3 rgx2 rgx1 rgx0)))))
 
 (defun outshine-comment-region (beg end &optional arg)
   "Use comment-style that always inserts at BOL.
