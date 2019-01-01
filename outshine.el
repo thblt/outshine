@@ -1317,59 +1317,6 @@ Call `comment-region' with a comment-style that guarantees
            comment-style)))
     (comment-region beg end arg)))
 
-(defun outshine-get-outorg-edit-buffer-content (&optional buf-or-file)
-  "Get content of buffer `outorg-edit-buffer-name.'
-Use current buffer for conversion, unless BUF-OR-FILE is given."
-  (let (buf-strg)
-    (with-current-buffer
-        (cond
-         ((ignore-errors (file-exists-p buf-or-file))
-          (find-file-noselect buf-or-file))
-         ((ignore-errors (get-buffer buf-or-file))
-          buf-or-file)
-         (t (current-buffer)))
-      (outshine-use-outorg
-       (lambda ()
-         (interactive)
-         (setq buf-strg
-               (buffer-substring-no-properties
-                (point-min) (point-max))))
-       'WHOLE-BUFFER-P))
-    buf-strg))
-
-;; courtesy of Pascal Bourguignon
-(defun outshine-use-outorg-finish-store-log-note ()
-  "Finish store-log-note and exit recursive edit"
-  (message "...entering outorg-finish-function")
-  (setq outorg-org-finish-function-called-p t)
-  (org-store-log-note)
-  (outorg-copy-edits-and-exit))
-
-(defun outshine-use-outorg (fun &optional whole-buffer-p &rest funargs)
-  "Use outorg to call FUN with FUNARGS on subtree or thing at point.
-
-FUN should be an Org-mode function that acts on the subtree or
-org-element at point. Optionally, with WHOLE-BUFFER-P non-nil,
-`outorg-edit-as-org' can be called on the whole buffer.
-
-Sets the variable `outshine-use-outorg-last-headline-marker' so
-that it always contains a point-marker to the last headline this
-function was called upon."
-  (save-excursion
-    (unless (outline-on-heading-p)
-      (or (outline-previous-heading)
-          (outline-next-heading)))
-    (move-marker outshine-use-outorg-last-headline-marker (point)))
-  (if whole-buffer-p
-      (outorg-edit-as-org '(4))
-    (outorg-edit-as-org))
-  (setq outorg-called-via-outshine-use-outorg-p t)
-  (goto-char outorg-edit-buffer-point-marker)
-  (if funargs
-      (apply fun funargs)
-    (call-interactively fun))
-  (outorg-copy-edits-and-exit))
-
 ;;;;; Additional outline functions
 
 ;;;;;; Functions from `outline-magic'
