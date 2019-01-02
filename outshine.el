@@ -1,6 +1,6 @@
 ;;; outshine.el --- outline with outshine outshines outline
 
-;; Copyright (c) 2013--2018 Thorsten Jolitz and contributors.
+;; Copyright (c) 2013-2019 Thorsten Jolitz and contributors.
 
 ;; Author: Thorsten Jolitz
 ;; Maintainer: Adam Porter <adam@alphapapa.net>

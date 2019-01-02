@@ -1,23 +1,29 @@
 ;;; outshine-org-cmds.el --- outshine-use-outorg functions
 
-;; Author: Adam Porter <adam@alphapapa.net>
-;; Version: 0.1
+;; Copyright (c) 2013-2019 Thorsten Jolitz and contributors.
+
+;; Author: Thorsten Jolitz
+;; Maintainer: Adam Porter <adam@alphapapa.net>
+;; Version: 3.0
 ;; URL: https://github.com/alphapapa/outshine
 ;; Package-Requires: ((outorg "2.0") (cl-lib "0.5"))
+;; Licence: GPL2+
+;; Keywords: convenience
 
-;;;; MetaData
-;;   :PROPERTIES:
-;;   :copyright: Thorsten_Jolitz
-;;   :copyright-from: 2016+
-;;   :version:  0.1
-;;   :licence:  GPL 2 or later (free software)
-;;   :licence-url: http://www.gnu.org/licenses/
-;;   :part-of-emacs: no
-;;   :authors: Adam_Porter Thorsten_Jolitz
-;;   :keywords: emacs outlines file_structuring
-;;   :git-repo: https://github.com/alphapapa/outshine.git
-;;   :git-clone: git://github.com/alphapapa/outshine.git
-;;   :END:
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 2 of the License, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;;; Commentary
 
@@ -33,11 +39,11 @@
 ;;  - NEXT  :: modified, but not finished
 ;;  - WAITING :: work paused due to unsolved problems
 ;;  - DONE  :: finished and tested
-;;  - CANCELLED :: makes no sense, or too difficult 
+;;  - CANCELLED :: makes no sense, or too difficult
 
 ;;;; Fundamental Problems to be solved
 
-;;;;; Outshine Agenda 
+;;;;; Outshine Agenda
 
 ;;;;; Outshine Clocking
 
@@ -429,7 +435,7 @@ current buffer(-file). "
 ;;   (interactive "P")
 ;;   (outshine-use-outorg 'org-archive-subtree-default nil arg))
 
-;;;;; TODO org-archive-subtree-default-with-confirmation 
+;;;;; TODO org-archive-subtree-default-with-confirmation
 
 ;; ;; M-x org-archive-subtree-default-with-confirmation RET
 ;; (defun outshine-archive-subtree-default-with-confirmation(&optional arg)
@@ -3076,7 +3082,7 @@ REFERENCE-BUFFER."
 
 ;;;;; TODO org-plot/gnuplot :plot/gnuplot:
 
-;; ;; 
+;; ;;
 ;; (defun outshine-plot/gnuplot :plot/gnuplot:(&optional arg)
 ;;   "Call outorg to trigger `org-plot/gnuplot :plot/gnuplot:'."
 ;;   (interactive "P")
