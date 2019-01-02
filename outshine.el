@@ -1855,47 +1855,6 @@ With a numeric prefix ARG, show all headlines up to that level."
   (save-excursion
     (insert (concat "  :" outshine-comment-tag ":"))))
 
-(defun outshine-toggle-subtree-comment-status (&optional arg)
-  "Tag (or untag) subtree at point with `outshine-comment-tag'.
-
-Unless point is on a heading, this function acts on the previous
-visible heading when ARG is non-nil, otherwise on the previous
-heading."
-  (interactive "P")
-  (let* ((com-end-p
-          (and
-           outshine-normalized-comment-end
-           (> (length outshine-normalized-comment-end) 0)))
-         (comtag (concat ":" outshine-comment-tag ":"))
-         (comtag-rgxp
-          (if com-end-p
-              (concat comtag
-                      " *"
-                      (regexp-quote
-                       outshine-normalized-comment-end)
-                      " *")
-            (concat comtag " *"))))
-    (unless (outline-on-heading-p)
-      (if arg
-          (outline-previous-visible-heading 1)
-        (outline-previous-heading)))
-    (end-of-line)
-    (cond
-     ((looking-back comtag-rgxp)
-      (let ((start (match-beginning 0)))
-        (delete-region (1- start) (+ start (length comtag)))))
-     ((and com-end-p
-           (looking-back
-            (concat
-             (regexp-quote outshine-normalized-comment-end) " *")))
-      (goto-char (match-beginning 0))
-      (if (looking-back " ")
-          (insert (concat comtag " "))
-        (insert (concat " " comtag))))
-     (t (if (looking-back " ")
-            (insert comtag)
-          (insert (concat " " comtag)))))))
-
 ;; Cycle comment subtrees anyway
 (defun outshine-force-cycle-comment ()
   "Cycle subtree even if it comment."
