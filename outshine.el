@@ -951,7 +951,7 @@ significant."
   "Outshine brings the look&feel of Org-mode to the (GNU Emacs)
 world outside of the Org major-mode."
   :init-value nil
-  :lighter "Outshine"
+  :lighter " Outshine"
   (if outshine-mode
       (outshine--minor-mode-activate)
     (outshine--minor-mode-deactivate)))
