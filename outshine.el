@@ -827,13 +827,15 @@ t      Everywhere except in headlines"
   "Suppress visibility-state-change messages when non-nil.")
 
 (defcustom outshine-org-style-global-cycling-at-bob-p nil
-  "Cycle globally if cursor is at beginning of buffer and not at a headline.
+  "Configure the behavior of `outshine-cycle` on beginning of buffer.
 
-This makes it possible to do global cycling without having to use
-S-TAB or C-u TAB.  For this special case to work, the first line
-of the buffer must not be a headline -- it may be empty or some
-other text. When this option is nil, don't do anything special at
-the beginning of the buffer."
+When the point is on a heading and at the beginning of the
+buffer (that is, when the first character of the buffer is the
+start of a headline, and the point is on it), the behavior of
+`outshine-cycle' is controlled by this variable:
+
+ - If nil, cycle the heading normally like in Org mode.
+ - Otherwise, cycle the entire buffer, ignoring the heading at point."
   :group 'outshine
   :type 'boolean)
 
