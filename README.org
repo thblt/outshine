@@ -237,7 +237,13 @@ neccessary).
 Outshine works with GNU Emacs 24 or later. No attempts of testing
 with older versions or other types of Emacs have been made (yet).
 
-** ChangeLog
+** Changelog
+
+*** 3.1-pre
+
+Nothing new yet.
+
+*** 3.0 and earlier
 
 | date            | author(s)              | version |
 |-----------------+------------------------+---------|
