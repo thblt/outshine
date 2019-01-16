@@ -974,20 +974,20 @@ Don't use this function, the public interface is
 
   ;; Advise org-store-log-note
   (defadvice org-store-log-note (around org-store-log-note-around activate)
+    ;; FIXME: Try to use `outshine-use-outorg' to do this instead of advice.
     "Outcomment inserted log-note in Outshine buffers."
-    (when outshine-mode
-      (let ((outshine-log-note-beg-marker
-             ;; stay before inserted text
-             (copy-marker (outshine-mimic-org-log-note-marker) nil))
-            (outshine-log-note-end-marker
-             ;; stay after inserted text
-             (copy-marker (outshine-mimic-org-log-note-marker) t)))
-        ad-do-it
-        (unless (derived-mode-p 'org-mode 'org-agenda-mode)
-          (outshine-comment-region outshine-log-note-beg-marker
-                                   outshine-log-note-end-marker))
-        (move-marker outshine-log-note-beg-marker nil)
-        (move-marker outshine-log-note-end-marker nil))))
+    (let ((outshine-log-note-beg-marker
+           ;; stay before inserted text
+           (copy-marker (outshine-mimic-org-log-note-marker) nil))
+          (outshine-log-note-end-marker
+           ;; stay after inserted text
+           (copy-marker (outshine-mimic-org-log-note-marker) t)))
+      ad-do-it
+      (unless (derived-mode-p 'org-mode 'org-agenda-mode)
+        (outshine-comment-region outshine-log-note-beg-marker
+                                 outshine-log-note-end-marker))
+      (move-marker outshine-log-note-beg-marker nil)
+      (move-marker outshine-log-note-end-marker nil)))
 
   ;; Compute basic outline regular expressions
   (outshine-set-outline-regexp-base)
