@@ -56,6 +56,20 @@ Try @@html:<kbd>@@C-h m@@html:</kbd>@@ (~describe-mode~) and @@html:<kbd>@@C-h b
 
 The very useful Org speed commands are available in ~outshine~.  To activate them, customize the variable ~outshine-use-speed-commands~.  Call ~outshine-speed-command-help~ to get an overview of the commands and keybindings.
 
+** Terminal support
+
+Emacs running on a terminal may have issues with =M-up= and =M-down=
+bindings.  There used to be a hack in Outshine itself to get those to
+work, which was removed in
+[[https://github.com/alphapapa/outshine/commit/210cc88bf9ee2fca2a283e4de89d4abe849d706b]].
+
+#+begin_src emacs-lisp
+  (define-key input-decode-map "\e\eOA" [(meta up)])
+  (define-key input-decode-map "\e\eOB" [(meta down)])
+#+end_src
+
+If you experience issues with Emacs not recognizing these bindings when running in a terminal, adding these two lines to your =init.el= may help.  You may need to adapt the escape sequences depending on the emulator you use.
+
 ** Misc
 
 +  ~imenu~ is supported with the command ~outshine-imenu~.
